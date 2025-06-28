@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/hmi-ai-prompting/static/css/main.f8fad953.css",
+    "main.js": "/hmi-ai-prompting/static/js/main.ae52b883.js",
+    "static/js/453.670e15c7.chunk.js": "/hmi-ai-prompting/static/js/453.670e15c7.chunk.js",
+    "index.html": "/hmi-ai-prompting/index.html",
+    "main.f8fad953.css.map": "/hmi-ai-prompting/static/css/main.f8fad953.css.map",
+    "main.ae52b883.js.map": "/hmi-ai-prompting/static/js/main.ae52b883.js.map",
+    "453.670e15c7.chunk.js.map": "/hmi-ai-prompting/static/js/453.670e15c7.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f8fad953.css",
+    "static/js/main.ae52b883.js"
+  ]
+}
