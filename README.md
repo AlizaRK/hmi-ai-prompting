@@ -2,7 +2,7 @@
 A course project for Human-Machine Interaction course with an aim of understanding the prompting behaviours of genders.
 
 ### Tasks
-- [ ] Finalize the nature of the study.
+- [x] Finalize the nature of the study. -> Remote setting
 - [ ] Design a pre-study form for the users.
 - [ ] Design informed consent form.
 - [ ] Finalize the tasks for participants.
