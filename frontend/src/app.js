@@ -3,7 +3,7 @@ import LandingPage from './components/LandingPage';
 import LoginPage from './components/LoginPage';
 import RegistrationPage from './components/RegistrationPage';
 import ChatPage from './components/ChatPage';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -21,7 +21,7 @@ const App = () => {
   };
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         {/* Landing page */}
         <Route 
@@ -64,7 +64,7 @@ const App = () => {
         {/* Catch all other routes and redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
