@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import apiService from '../services/api';
+
 
 const LoginPage = ({ onLoginComplete }) => {
   const [formData, setFormData] = useState({
@@ -16,25 +18,15 @@ const LoginPage = ({ onLoginComplete }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
-    // Basic validation
-    if (!formData.email || !formData.password) {
-      setError('Please fill in all fields');
-      return;
+    try {
+        const userData = await apiService.login(formData);
+        onLoginComplete(userData);
+        navigate('/chat');
+    } catch (error) {
+        setError('Login failed');
     }
-
-    // Simulate login logic - replace with your actual authentication
-    const userData = {
-      email: formData.email,
-      name: formData.email.split('@')[0], // Extract name from email
-      id: Date.now()
-    };
-
-    onLoginComplete(userData);
-    navigate('/chat');
   };
 
   const containerStyle = {
