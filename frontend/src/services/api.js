@@ -27,7 +27,8 @@ class ApiService {
       const response = await fetch(url, config);
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
       
       const data = await response.json();
@@ -47,7 +48,7 @@ class ApiService {
   }
 
   async register(userData) {
-    return this.request('/api/auth/register', {
+    return this.request('/register', {
       method: 'POST',
       body: JSON.stringify(userData),
     });
@@ -60,22 +61,31 @@ class ApiService {
   }
 
   // Chat methods
-  async getMessages(chatId) {
-    return this.request(`/api/chats/${chatId}/messages`);
+  async sendMessage(messageData) {
+    return this.request('/api/chat/message', {
+      method: 'POST',
+      body: JSON.stringify(messageData),
+    });
   }
 
-  async sendMessage(chatId, message) {
-    return this.request(`/api/chats/${chatId}/messages`, {
-      method: 'POST',
-      body: JSON.stringify(message),
-    });
+  async getConversation(participantId, taskId) {
+    return this.request(`/api/conversations/${participantId}/${taskId}`);
+  }
+
+  async getTasks() {
+    return this.request('/api/tasks');
+  }
+
+  // Legacy methods for compatibility
+  async getMessages(chatId) {
+    return this.request(`/api/chats/${chatId}/messages`);
   }
 
   async getChats() {
     return this.request('/api/chats');
   }
 
-  // WebSocket connection for real-time chat
+  // WebSocket connection for real-time chat (if needed later)
   connectWebSocket(userId) {
     const wsUrl = this.baseURL.replace('http', 'ws');
     const ws = new WebSocket(`${wsUrl}/ws/${userId}`);

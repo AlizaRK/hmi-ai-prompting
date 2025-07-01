@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, User, MessageSquare, ChevronDown, Menu, X } from 'lucide-react';
+import { Send, User, MessageSquare, ChevronDown, Menu, X, Loader2 } from 'lucide-react';
 import AccountPanel from './AccountPanel';
+import apiService from '../services/api';
 
 const ChatPage = ({ user, onLogout }) => {
   const [selectedChat, setSelectedChat] = useState(null);
@@ -9,6 +10,8 @@ const ChatPage = ({ user, onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAccountPanelOpen, setIsAccountPanelOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const messagesEndRef = useRef(null);
 
   // Sample chat topics for the study
@@ -63,42 +66,120 @@ const ChatPage = ({ user, onLogout }) => {
     }
   }, [chats]);
 
-  const sendMessage = (content) => {
-    if (!content.trim() || !selectedChat) return;
+  // Load conversation history when chat is selected
+  useEffect(() => {
+    if (selectedChat && user) {
+      loadConversationHistory(selectedChat.id);
+    }
+  }, [selectedChat, user]);
 
-    const newMessage = {
+  const loadConversationHistory = async (taskId) => {
+    try {
+      // For now, we'll use a simple participant ID based on the user data
+      // In a real app, you'd have proper user authentication with IDs
+      const participantId = user.participantId || 1;
+      
+      const conversation = await apiService.getConversation(participantId, taskId);
+      
+      if (conversation.messages && conversation.messages.length > 0) {
+        setChats(prevChats => 
+          prevChats.map(chat => 
+            chat.id === taskId 
+              ? { ...chat, messages: conversation.messages }
+              : chat
+          )
+        );
+        
+        if (selectedChat && selectedChat.id === taskId) {
+          setSelectedChat(prev => ({
+            ...prev,
+            messages: conversation.messages
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Error loading conversation history:', error);
+    }
+  };
+
+  const sendMessage = async (content) => {
+    if (!content.trim() || !selectedChat || isLoading) return;
+
+    setIsLoading(true);
+    setError('');
+
+    const newUserMessage = {
       id: Date.now(),
       content,
       sender: 'user',
       timestamp: new Date().toISOString()
     };
 
-    // Simulate AI response
-    const aiResponse = {
-      id: Date.now() + 1,
-      content: `This is a simulated response from ${selectedAI}. In a real implementation, this would connect to your chosen AI API.`,
-      sender: 'ai',
-      timestamp: new Date().toISOString()
+    // Add user message immediately
+    const updatedChat = {
+      ...selectedChat,
+      messages: [...selectedChat.messages, newUserMessage]
     };
-
+    
+    setSelectedChat(updatedChat);
     setChats(prevChats => 
       prevChats.map(chat => 
-        chat.id === selectedChat.id 
-          ? { ...chat, messages: [...chat.messages, newMessage, aiResponse] }
-          : chat
+        chat.id === selectedChat.id ? updatedChat : chat
       )
     );
 
-    setSelectedChat(prev => ({
-      ...prev,
-      messages: [...prev.messages, newMessage, aiResponse]
-    }));
+    try {
+      // Send message to API
+      const response = await apiService.sendMessage({
+        message: content,
+        ai_model: selectedAI,
+        participant_id: user.participantId || 1,
+        task_id: selectedChat.id
+      });
+
+      const aiMessage = {
+        id: Date.now() + 1,
+        content: response.response,
+        sender: 'ai',
+        ai_model: response.model,
+        timestamp: response.timestamp
+      };
+
+      // Add AI response
+      const finalChat = {
+        ...updatedChat,
+        messages: [...updatedChat.messages, aiMessage]
+      };
+
+      setSelectedChat(finalChat);
+      setChats(prevChats => 
+        prevChats.map(chat => 
+          chat.id === selectedChat.id ? finalChat : chat
+        )
+      );
+
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setError('Failed to send message. Please try again.');
+      
+      // Remove the user message if API call failed
+      setSelectedChat(selectedChat);
+      setChats(prevChats => 
+        prevChats.map(chat => 
+          chat.id === selectedChat.id ? selectedChat : chat
+        )
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSendMessage = () => {
     sendMessage(message);
     setMessage('');
   };
+
+  const clearError = () => setError('');
 
   return (
     <div className="flex h-screen bg-gray-100 relative">
@@ -223,6 +304,23 @@ const ChatPage = ({ user, onLogout }) => {
           </div>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-400 p-4 mx-4 mt-4">
+            <div className="flex">
+              <div className="flex-1">
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+              <button
+                onClick={clearError}
+                className="text-red-400 hover:text-red-600"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Messages Area */}
         {selectedChat ? (
           <>
@@ -238,14 +336,30 @@ const ChatPage = ({ user, onLogout }) => {
                       : 'bg-white border border-gray-200 text-gray-800'
                   }`}>
                     <div className="whitespace-pre-wrap">{msg.content}</div>
-                    <div className={`text-xs mt-1 ${
+                    <div className={`text-xs mt-1 flex items-center justify-between ${
                       msg.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
                     }`}>
-                      {new Date(msg.timestamp).toLocaleTimeString()}
+                      <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                      {msg.ai_model && (
+                        <span className="ml-2 font-medium">{msg.ai_model}</span>
+                      )}
                     </div>
                   </div>
                 </div>
               ))}
+              
+              {/* Loading indicator */}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-white border border-gray-200 rounded-lg px-4 py-2 flex items-center space-x-2">
+                    <Loader2 size={16} className="animate-spin text-gray-500" />
+                    <span className="text-gray-500 text-sm">
+                      {selectedAI} is thinking...
+                    </span>
+                  </div>
+                </div>
+              )}
+              
               <div ref={messagesEndRef} />
             </div>
 
@@ -257,20 +371,25 @@ const ChatPage = ({ user, onLogout }) => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Type your message..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isLoading}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                   onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' && !isLoading) {
                       handleSendMessage();
                     }
                   }}
                 />
                 <button
                   type="button"
-                  disabled={!message.trim()}
+                  disabled={!message.trim() || isLoading}
                   onClick={handleSendMessage}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
                 >
-                  <Send size={16} />
+                  {isLoading ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Send size={16} />
+                  )}
                 </button>
               </div>
             </div>
