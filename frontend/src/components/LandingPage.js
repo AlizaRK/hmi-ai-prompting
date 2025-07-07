@@ -96,8 +96,8 @@ const LandingPage = () => {
     <div style={containerStyle}>
       <div style={contentStyle}>
         <header style={headerStyle}>
-          <h1 style={titleStyle}>ChatApp</h1>
-          <p style={subtitleStyle}>Connect, Chat, and Collaborate</p>
+          <h1 style={titleStyle}>GenderPromptLens</h1>
+          <p style={subtitleStyle}>Research Study</p>
         </header>
         
         <div style={authOptionsStyle}>
@@ -162,9 +162,9 @@ const LandingPage = () => {
           </div>
         </div>
         
-        <footer style={footerStyle}>
-          <p style={{ margin: 0, fontSize: '0.9rem' }}>© 2025 ChatApp. All rights reserved.</p>
-        </footer>
+        {/* <footer style={footerStyle}>
+          <p style={{ margin: 0, fontSize: '0.9rem' }}>© 2025 GenderPromptLens. All rights reserved.</p>
+        </footer> */}
       </div>
     </div>
   );
