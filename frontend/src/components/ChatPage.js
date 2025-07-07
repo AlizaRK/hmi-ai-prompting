@@ -4,12 +4,27 @@ import AccountPanel from './AccountPanel';
 
 const ChatPage = ({ user, onLogout }) => {
   const [selectedChat, setSelectedChat] = useState(null);
-  const [selectedAI, setSelectedAI] = useState('Claude');
+  const [selectedAI, setSelectedAI] = useState('GPT-4o');
   const [isAIDropdownOpen, setIsAIDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAccountPanelOpen, setIsAccountPanelOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [puterReady, setPuterReady] = useState(false);
   const messagesEndRef = useRef(null);
+
+  // Check if PuterJS is ready
+  useEffect(() => {
+    const checkPuterReady = () => {
+      if (window.puter) {
+        setPuterReady(true);
+        console.log('PuterJS is ready!');
+      } else {
+        setTimeout(checkPuterReady, 100);
+      }
+    };
+    checkPuterReady();
+  }, []);
 
   // Sample chat topics for the study
   const chatTopics = [
@@ -47,7 +62,7 @@ const ChatPage = ({ user, onLogout }) => {
 
   const [chats, setChats] = useState(chatTopics);
 
-  const aiOptions = ['Claude', 'GPT-4', 'Gemini', 'PaLM'];
+  const aiOptions = ['GPT-4o', 'Claude', 'Gemini', 'PaLM'];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -63,7 +78,44 @@ const ChatPage = ({ user, onLogout }) => {
     }
   }, [chats]);
 
-  const sendMessage = (content) => {
+const callPuterAI = async (prompt) => {
+  if (!window.puter || !puterReady) {
+    throw new Error('PuterJS is not ready yet');
+  }
+
+  try {
+    // Pass through any options you need, e.g. model, temperature, max_tokens
+    const response = await window.puter.ai.chat(prompt, {
+      model: selectedAI.toLowerCase(), 
+      temperature: 0.7,
+      max_tokens: 1000
+    });
+
+    // Now extract the actual text from whatever shape the response has:
+    if (response.message !== undefined) {
+      // Claude‐style: response.message may be a string or an object
+      if (typeof response.message === 'string') {
+        return response.message;
+      }
+      if (typeof response.message.content === 'string') {
+        return response.message.content;
+      }
+    }
+
+    // GPT‐style: response.content is the string
+    if (typeof response.content === 'string') {
+      return response.content;
+    }
+
+    // Fallback: stringify the whole object
+    return String(response);
+  } catch (error) {
+    console.error('PuterJS AI call failed:', error);
+    throw error;
+  }
+};
+
+  const sendMessage = async (content) => {
     if (!content.trim() || !selectedChat) return;
 
     const newMessage = {
@@ -73,26 +125,83 @@ const ChatPage = ({ user, onLogout }) => {
       timestamp: new Date().toISOString()
     };
 
-    // Simulate AI response
-    const aiResponse = {
-      id: Date.now() + 1,
-      content: `This is a simulated response from ${selectedAI}. In a real implementation, this would connect to your chosen AI API.`,
-      sender: 'ai',
-      timestamp: new Date().toISOString()
-    };
-
+    // Add user message immediately
     setChats(prevChats => 
       prevChats.map(chat => 
         chat.id === selectedChat.id 
-          ? { ...chat, messages: [...chat.messages, newMessage, aiResponse] }
+          ? { ...chat, messages: [...chat.messages, newMessage] }
           : chat
       )
     );
 
     setSelectedChat(prev => ({
       ...prev,
-      messages: [...prev.messages, newMessage, aiResponse]
+      messages: [...prev.messages, newMessage]
     }));
+
+    // Show loading state
+    setIsLoading(true);
+
+    try {
+      let aiResponseContent = '';
+      
+      if (selectedAI === 'GPT-4o' && puterReady) {
+        // Use real GPT-4o via PuterJS
+        aiResponseContent = await callPuterAI(content);
+      } else {
+        // Fallback to simulated response for other AIs
+        aiResponseContent = `This is a simulated response from ${selectedAI}. In a real implementation, this would connect to your chosen AI API.`;
+      }
+
+      const aiResponse = {
+        id: Date.now() + 1,
+        content: aiResponseContent,
+        sender: 'ai',
+        timestamp: new Date().toISOString(),
+        model: selectedAI
+      };
+
+      setChats(prevChats => 
+        prevChats.map(chat => 
+          chat.id === selectedChat.id 
+            ? { ...chat, messages: [...chat.messages, aiResponse] }
+            : chat
+        )
+      );
+
+      setSelectedChat(prev => ({
+        ...prev,
+        messages: [...prev.messages, aiResponse]
+      }));
+
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      
+      // Add error message
+      const errorResponse = {
+        id: Date.now() + 1,
+        content: `Sorry, I encountered an error: ${error.message}. Please try again.`,
+        sender: 'ai',
+        timestamp: new Date().toISOString(),
+        model: selectedAI,
+        isError: true
+      };
+
+      setChats(prevChats => 
+        prevChats.map(chat => 
+          chat.id === selectedChat.id 
+            ? { ...chat, messages: [...chat.messages, errorResponse] }
+            : chat
+        )
+      );
+
+      setSelectedChat(prev => ({
+        ...prev,
+        messages: [...prev.messages, errorResponse]
+      }));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSendMessage = () => {
@@ -118,6 +227,16 @@ const ChatPage = ({ user, onLogout }) => {
           </div>
           <div className="text-sm text-gray-600">
             Welcome, {user?.fullName}
+          </div>
+          {/* PuterJS Status Indicator */}
+          <div className="mt-2 text-xs">
+            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+              puterReady 
+                ? 'bg-green-100 text-green-800' 
+                : 'bg-yellow-100 text-yellow-800'
+            }`}>
+              {puterReady ? '🟢 PuterJS Ready' : '🟡 Loading PuterJS...'}
+            </span>
           </div>
         </div>
         
@@ -198,11 +317,14 @@ const ChatPage = ({ user, onLogout }) => {
                 className="flex items-center space-x-2 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
               >
                 <span className="text-sm font-medium">{selectedAI}</span>
+                {selectedAI === 'GPT-4o' && (
+                  <span className={`w-2 h-2 rounded-full ${puterReady ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                )}
                 <ChevronDown size={16} />
               </button>
               
               {isAIDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                   {aiOptions.map((ai) => (
                     <button
                       key={ai}
@@ -214,7 +336,12 @@ const ChatPage = ({ user, onLogout }) => {
                         selectedAI === ai ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
                       }`}
                     >
-                      {ai}
+                      <div className="flex items-center justify-between">
+                        <span>{ai}</span>
+                        {ai === 'GPT-4o' && (
+                          <span className={`w-2 h-2 rounded-full ${puterReady ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                        )}
+                      </div>
                     </button>
                   ))}
                 </div>
@@ -235,17 +362,39 @@ const ChatPage = ({ user, onLogout }) => {
                   <div className={`max-w-[70%] rounded-lg px-4 py-2 ${
                     msg.sender === 'user'
                       ? 'bg-blue-600 text-white'
+                      : msg.isError
+                      ? 'bg-red-50 border border-red-200 text-red-800'
                       : 'bg-white border border-gray-200 text-gray-800'
                   }`}>
                     <div className="whitespace-pre-wrap">{msg.content}</div>
-                    <div className={`text-xs mt-1 ${
+                    <div className={`text-xs mt-1 flex items-center justify-between ${
                       msg.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
                     }`}>
-                      {new Date(msg.timestamp).toLocaleTimeString()}
+                      <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                      {msg.sender === 'ai' && msg.model && (
+                        <span className="ml-2 text-xs">
+                          {msg.model}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
               ))}
+              
+              {/* Loading indicator */}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-white border border-gray-200 rounded-lg px-4 py-2 max-w-[70%]">
+                    <div className="flex items-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                      <span className="text-gray-600">
+                        {selectedAI === 'GPT-4o' ? 'GPT-4o is thinking...' : `${selectedAI} is thinking...`}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <div ref={messagesEndRef} />
             </div>
 
@@ -256,23 +405,41 @@ const ChatPage = ({ user, onLogout }) => {
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder={
+                    selectedAI === 'GPT-4o' && !puterReady 
+                      ? 'Waiting for PuterJS to load...' 
+                      : `Type your message to ${selectedAI}...`
+                  }
+                  disabled={isLoading || (selectedAI === 'GPT-4o' && !puterReady)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === 'Enter' && !isLoading) {
                       handleSendMessage();
                     }
                   }}
                 />
                 <button
                   type="button"
-                  disabled={!message.trim()}
+                  disabled={!message.trim() || isLoading || (selectedAI === 'GPT-4o' && !puterReady)}
                   onClick={handleSendMessage}
                   className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
                 >
-                  <Send size={16} />
+                  {isLoading ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  ) : (
+                    <Send size={16} />
+                  )}
                 </button>
               </div>
+              
+              {/* Status message */}
+              {selectedAI === 'GPT-4o' && (
+                <div className="mt-2 text-xs text-gray-500">
+                  {puterReady 
+                    ? '✅ Ready to chat with GPT-4o via PuterJS' 
+                    : '⏳ Loading PuterJS for GPT-4o access...'}
+                </div>
+              )}
             </div>
           </>
         ) : (
@@ -281,6 +448,13 @@ const ChatPage = ({ user, onLogout }) => {
               <MessageSquare size={64} className="mx-auto mb-4 text-gray-300" />
               <h3 className="text-xl font-medium mb-2">Welcome to the Study</h3>
               <p>Select a task from the sidebar to begin</p>
+              {selectedAI === 'GPT-4o' && (
+                <p className="mt-2 text-sm">
+                  {puterReady 
+                    ? '✅ GPT-4o is ready via PuterJS' 
+                    : '⏳ Loading PuterJS...'}
+                </p>
+              )}
             </div>
           </div>
         )}
