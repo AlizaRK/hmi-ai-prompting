@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import apiService from '../services/api';
+import axios from 'axios';
 
 
 const LoginPage = ({ onLoginComplete }) => {
@@ -21,8 +22,12 @@ const LoginPage = ({ onLoginComplete }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const userData = await apiService.login(formData);
-        onLoginComplete(userData);
+        const res = await axios.post('http://localhost:5000/login', formData);
+        const user = res.data.user;
+        localStorage.setItem("user", JSON.stringify(user));
+        onLoginComplete(res.data);
+        console.log(res.data);
+        
         navigate('/chat');
     } catch (error) {
         setError('Login failed');

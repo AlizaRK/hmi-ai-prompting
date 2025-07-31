@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, User, MessageSquare, ChevronDown, Menu, X, Image as ImageIcon, Type } from 'lucide-react';
 import AccountPanel from './AccountPanel';
+import axios from 'axios';
+
 
 const ChatPage = ({ user, onLogout }) => {
   const [selectedChat, setSelectedChat] = useState(null);
@@ -13,6 +15,13 @@ const ChatPage = ({ user, onLogout }) => {
   const [puterReady, setPuterReady] = useState(false);
   const [messageType, setMessageType] = useState('text'); // 'text' or 'image'
   const messagesEndRef = useRef(null);
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+
+  const [submittedTasks, setSubmittedTasks] = useState(() => {
+    const stored = localStorage.getItem('submittedTasks');
+    return stored ? JSON.parse(stored) : [];
+  });
+
 
   // Check if PuterJS is ready
   useEffect(() => {
@@ -28,40 +37,63 @@ const ChatPage = ({ user, onLogout }) => {
   }, []);
 
   // Sample chat topics for the study
-  const chatTopics = [
-    {
-      id: 1,
-      title: "Vacation Planning",
-      task: "Ask AI to generate your ideal vacation picture or describe your dream vacation",
-      messages: []
-    },
-    {
-      id: 2,
-      title: "Creative Writing",
-      task: "Ask AI to help you write a short story about friendship or create an illustration",
-      messages: []
-    },
-    {
-      id: 3,
-      title: "Recipe Creation",
-      task: "Ask AI to create a unique recipe or generate food imagery",
-      messages: []
-    },
-    {
-      id: 4,
-      title: "Problem Solving",
-      task: "Ask AI to help you solve a daily life challenge or create visual diagrams",
-      messages: []
-    },
-    {
-      id: 5,
-      title: "Learning Assistant",
-      task: "Ask AI to explain a complex concept or create educational visuals",
-      messages: []
-    }
-  ];
+  // const chatTopics = [
+  //   {
+  //     id: 1,
+  //     title: "Vacation Planning",
+  //     task: "Ask AI to generate your ideal vacation picture",
+  //     messages: []
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Creative Writing",
+  //     task: "Ask AI to help you write a short story about friendship",
+  //     messages: []
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Recipe Creation",
+  //     task: "Ask AI to create a unique recipe using your favorite ingredients",
+  //     messages: []
+  //   },
+  //   {
+  //     id: 4,
+  //     title: "Problem Solving",
+  //     task: "Ask AI to help you solve a daily life challenge",
+  //     messages: []
+  //   },
+  //   {
+  //     id: 5,
+  //     title: "Learning Assistant",
+  //     task: "Ask AI to explain a complex concept in simple terms",
+  //     messages: []
+  //   }
+  // ];
 
-  const [chats, setChats] = useState(chatTopics);
+  // const [chats, setChats] = useState(chatTopics);
+
+  const [chats, setChats] = useState([]);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/tasks");
+        const tasks = res.data;
+
+        const enrichedTasks = tasks.map(task => ({
+          ...task,
+          messages: [],
+        }));
+
+        setChats(enrichedTasks);
+      } catch (err) {
+        console.error("Failed to load tasks:", err);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
 
   const aiOptions = ['GPT-4o', 'Claude', 'Gemini', 'PaLM'];
 
@@ -151,9 +183,9 @@ const ChatPage = ({ user, onLogout }) => {
     };
 
     // Add user message immediately
-    setChats(prevChats => 
-      prevChats.map(chat => 
-        chat.id === selectedChat.id 
+    setChats(prevChats =>
+      prevChats.map(chat =>
+        chat.id === selectedChat.id
           ? { ...chat, messages: [...chat.messages, newMessage] }
           : chat
       )
@@ -168,8 +200,8 @@ const ChatPage = ({ user, onLogout }) => {
     setIsLoading(true);
 
     try {
-      let aiResponse;
-      
+      let aiResponseContent = '';
+
       if (selectedAI === 'GPT-4o' && puterReady) {
         if (messageType === 'image') {
           // Generate image using PuterJS DALL-E 3
@@ -210,6 +242,13 @@ const ChatPage = ({ user, onLogout }) => {
         };
       }
 
+      const aiResponse = {
+        id: Date.now() + 1,
+        content: aiResponseContent,
+        sender: 'ai',
+        timestamp: new Date().toISOString(),
+        model: selectedAI
+      };
       setChats(prevChats => 
         prevChats.map(chat => 
           chat.id === selectedChat.id 
@@ -222,10 +261,41 @@ const ChatPage = ({ user, onLogout }) => {
         ...prev,
         messages: [...prev.messages, aiResponse]
       }));
+      // Prepare interaction + message payload
+      console.log(storedUser);
+      const interactionPayload = {
+        participant_id: storedUser.participant_id, // or user.id if available
+        task_id: selectedChat.id,   // assuming task.id is chat.id
+        ai_tool: selectedAI,
+        messages: [
+          {
+            sender: 'user',
+            content,
+            timestamp: newMessage.timestamp,
+          },
+          {
+            sender: 'ai',
+            content: aiResponseContent,
+            timestamp: new Date().toISOString(),
+          }
+        ]
+      };
+
+      // Send to backend
+      try {
+        await fetch('http://localhost:5000/store-interaction', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(interactionPayload)
+        });
+      } catch (err) {
+        console.error("Failed to store interaction", err);
+      }
+
 
     } catch (error) {
       console.error('Error getting AI response:', error);
-      
+
       // Add error message
       const errorResponse = {
         id: Date.now() + 1,
@@ -237,9 +307,9 @@ const ChatPage = ({ user, onLogout }) => {
         type: 'text'
       };
 
-      setChats(prevChats => 
-        prevChats.map(chat => 
-          chat.id === selectedChat.id 
+      setChats(prevChats =>
+        prevChats.map(chat =>
+          chat.id === selectedChat.id
             ? { ...chat, messages: [...chat.messages, errorResponse] }
             : chat
         )
@@ -253,6 +323,25 @@ const ChatPage = ({ user, onLogout }) => {
       setIsLoading(false);
     }
   };
+
+  const handleSubmitTask = async () => {
+    if (!selectedChat || submittedTasks.includes(selectedChat.id)) return;
+
+    try {
+      // Optional: Send submission info to server
+      await axios.post('http://localhost:5000/submit-task', {
+        participant_id: storedUser.participant_id,
+        task_id: selectedChat.id,
+      });
+
+      const updated = [...submittedTasks, selectedChat.id];
+      setSubmittedTasks(updated);
+      localStorage.setItem('submittedTasks', JSON.stringify(updated));
+    } catch (error) {
+      console.error("Failed to submit task", error);
+    }
+  };
+
 
   const handleSendMessage = () => {
     sendMessage(message);
@@ -293,9 +382,8 @@ const ChatPage = ({ user, onLogout }) => {
   return (
     <div className="flex h-screen bg-gray-100 relative">
       {/* Sidebar */}
-      <div className={`bg-white border-r border-gray-200 transition-all duration-300 ${
-        isSidebarOpen ? 'w-80' : 'w-0'
-      } overflow-hidden relative`}>
+      <div className={`bg-white border-r border-gray-200 transition-all duration-300 ${isSidebarOpen ? 'w-80' : 'w-0'
+        } overflow-hidden relative`}>
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-800">Study Tasks</h2>
@@ -320,15 +408,14 @@ const ChatPage = ({ user, onLogout }) => {
             </span>
           </div>
         </div>
-        
+
         <div className="overflow-y-auto h-full pb-20">
           {chats.map((chat) => (
             <div
               key={chat.id}
               onClick={() => setSelectedChat(chat)}
-              className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                selectedChat?.id === chat.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-              }`}
+              className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${selectedChat?.id === chat.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                }`}
             >
               <div className="flex items-start space-x-3">
                 <MessageSquare size={20} className="text-gray-400 mt-1 flex-shrink-0" />
@@ -360,7 +447,7 @@ const ChatPage = ({ user, onLogout }) => {
       </div>
 
       {/* Account Panel */}
-      <AccountPanel 
+      <AccountPanel
         user={user}
         onLogout={onLogout}
         isOpen={isAccountPanelOpen}
@@ -390,7 +477,7 @@ const ChatPage = ({ user, onLogout }) => {
                 )}
               </div>
             </div>
-            
+
             {/* AI Selection Dropdown */}
             <div className="relative">
               <button
@@ -403,7 +490,7 @@ const ChatPage = ({ user, onLogout }) => {
                 )}
                 <ChevronDown size={16} />
               </button>
-              
+
               {isAIDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                   {aiOptions.map((ai) => (
@@ -413,9 +500,8 @@ const ChatPage = ({ user, onLogout }) => {
                         setSelectedAI(ai);
                         setIsAIDropdownOpen(false);
                       }}
-                      className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${
-                        selectedAI === ai ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
-                      }`}
+                      className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${selectedAI === ai ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <span>{ai}</span>
@@ -440,17 +526,15 @@ const ChatPage = ({ user, onLogout }) => {
                   key={msg.id}
                   className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className={`max-w-[70%] rounded-lg px-4 py-2 ${
-                    msg.sender === 'user'
-                      ? 'bg-blue-600 text-white'
-                      : msg.isError
+                  <div className={`max-w-[70%] rounded-lg px-4 py-2 ${msg.sender === 'user'
+                    ? 'bg-blue-600 text-white'
+                    : msg.isError
                       ? 'bg-red-50 border border-red-200 text-red-800'
                       : 'bg-white border border-gray-200 text-gray-800'
-                  }`}>
-                    {renderMessage(msg)}
-                    <div className={`text-xs mt-1 flex items-center justify-between ${
-                      msg.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
                     }`}>
+                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                    <div className={`text-xs mt-1 flex items-center justify-between ${msg.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
+                      }`}>
                       <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
                       {msg.sender === 'ai' && msg.model && (
                         <span className="ml-2 text-xs flex items-center space-x-1">
@@ -462,7 +546,7 @@ const ChatPage = ({ user, onLogout }) => {
                   </div>
                 </div>
               ))}
-              
+
               {/* Loading indicator */}
               {isLoading && (
                 <div className="flex justify-start">
@@ -478,7 +562,7 @@ const ChatPage = ({ user, onLogout }) => {
                   </div>
                 </div>
               )}
-              
+
               <div ref={messagesEndRef} />
             </div>
 
@@ -553,7 +637,7 @@ const ChatPage = ({ user, onLogout }) => {
                   )}
                 </button>
               </div>
-              
+
               {/* Status message */}
               <div className="mt-2 text-xs text-gray-500">
                 {selectedAI === 'GPT-4o' && puterReady && (
@@ -589,6 +673,22 @@ const ChatPage = ({ user, onLogout }) => {
             </div>
           </div>
         )}
+
+        {/* Task Submit Button */}
+        <div className="border-t border-gray-200 p-4 pt-2">
+          {submittedTasks.includes(selectedChat.id) ? (
+            <div className="text-green-600 text-sm">✅ You have already submitted this task.</div>
+          ) : (
+            <button
+              onClick={handleSubmitTask}
+              className="w-full mt-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              ✅ Submit Task
+            </button>
+          )}
+        </div>
+
+
       </div>
 
       {/* Account Icon for when sidebar is closed */}

@@ -19,10 +19,6 @@ const AccountPanel = ({ user, onLogout, isOpen, onClose }) => {
           <span className="ml-2 font-medium">{user.fullName}</span>
         </div>
         <div>
-          <span className="text-gray-600">ID:</span>
-          <span className="ml-2 font-medium">{user.participantId}</span>
-        </div>
-        <div>
           <span className="text-gray-600">Age:</span>
           <span className="ml-2 font-medium">{user.age}</span>
         </div>
