@@ -4,6 +4,7 @@ import os
 import requests
 import bcrypt
 from flask_cors import CORS
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -33,7 +34,7 @@ def get_participants():
             "details": response.json()
         }), response.status_code
 
-    return jsonify(response.json()), 200
+    return jsonify(response.json()), 200 
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -71,7 +72,12 @@ def register():
 
     return jsonify({
         "message": "User registered successfully",
-        "data": response.json()
+        "user": {
+            "email": response.json()["email"],
+            "name": response.json()["name"],
+            "participant_id": response.json()["id"]
+            # never return password hash
+        }
     }), 200
     
 @app.route("/login", methods=["POST"])
@@ -108,11 +114,134 @@ def login():
         "message": "Login successful",
         "user": {
             "email": user["email"],
-            "fullName": user.get("fullName")
+            "name": user.get("name"),
+            "participant_id": user.get("id")
             # never return password hash
         }
     }), 200
+    
+# TASKS API
+@app.route("/tasks", methods=["GET"])
+def get_tasks():
+    supabase_endpoint = f"{SUPABASE_URL}/rest/v1/task"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+    }
+    
+    response = requests.get(supabase_endpoint, headers=headers)
 
+    if response.status_code >= 400:
+        return jsonify({
+            "error": "Supabase fetch failed",
+            "details": response.json()
+        }), response.status_code
+
+    return jsonify(response.json()), 200 
+
+@app.route("/submit-task", methods=["POST"])
+def submit_task():
+    data = request.get_json()
+
+    participant_id = data.get("participant_id")
+    task_id = data.get("task_id")
+
+    if not participant_id or not task_id:
+        return jsonify({"error": "participant_id and task_id required"}), 400
+
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
+
+    # Step 1: Find the existing interaction
+    query_params = f"?participant_id=eq.{participant_id}&task_id=eq.{task_id}"
+    get_resp = requests.get(
+        f"{SUPABASE_URL}/rest/v1/participant_task_interaction{query_params}",
+        headers=headers
+    )
+
+    if get_resp.status_code != 200 or not get_resp.json():
+        return jsonify({"error": "Interaction not found"}), 404
+
+    interaction = get_resp.json()[0]
+    interaction_id = interaction["id"]
+
+    # Step 2: Update ended_at
+    patch_resp = requests.patch(
+        f"{SUPABASE_URL}/rest/v1/participant_task_interaction?id=eq.{interaction_id}",
+        headers=headers,
+        json={"ended_at": datetime.utcnow().isoformat()}
+    )
+
+    if patch_resp.status_code >= 400:
+        return jsonify({"error": "Failed to update ended_at", "details": patch_resp.json()}), 500
+
+    return jsonify({"message": "Task submitted", "ended_at": datetime.utcnow().isoformat()}), 200
+
+
+@app.route("/store-interaction", methods=["POST"])
+def store_interaction():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Missing JSON body"}), 400
+
+    participant_id = data.get("participant_id")
+    task_id = data.get("task_id")
+    ai_tool = data.get("ai_tool")
+    messages = data.get("messages", [])
+
+    if not participant_id or not task_id or not ai_tool or not messages:
+        return jsonify({"error": "Missing required fields"}), 400
+
+    # 1. Insert into participant_task_interaction
+    interaction_payload = {
+        "participant_id": participant_id,
+        "task_id": task_id,
+        "ai_tool": ai_tool
+    }
+
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
+
+    interaction_resp = requests.post(
+        f"{SUPABASE_URL}/rest/v1/participant_task_interaction",
+        headers=headers,
+        json=[interaction_payload]
+    )
+
+    if interaction_resp.status_code >= 400:
+        return jsonify({"error": "Failed to insert interaction", "details": interaction_resp.json()}), 500
+
+    interaction_id = interaction_resp.json()[0]["id"]
+
+    # 2. Insert messages linked to the interaction
+    message_payload = [
+        {
+            "interaction_id": interaction_id,
+            "sender": msg["sender"],
+            "content": msg["content"],
+            "created_at": msg.get("timestamp") or datetime.utcnow().isoformat()
+        }
+        for msg in messages
+    ]
+
+    message_resp = requests.post(
+        f"{SUPABASE_URL}/rest/v1/message",
+        headers=headers,
+        json=message_payload
+    )
+
+    if message_resp.status_code >= 400:
+        return jsonify({"error": "Failed to insert messages", "details": message_resp.json()}), 500
+
+    return jsonify({"message": "Interaction and messages stored successfully"}), 200
 
 
 if __name__ == '__main__':
