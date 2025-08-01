@@ -243,6 +243,3 @@ def store_interaction():
 
     return jsonify({"message": "Interaction and messages stored successfully"}), 200
 
-
-if __name__ == '__main__':
-    app.run()
