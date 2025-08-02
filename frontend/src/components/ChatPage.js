@@ -77,7 +77,7 @@ const ChatPage = ({ user, onLogout }) => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/tasks");
+        const res = await axios.get("https://hmi-ai-prompting.onrender.com/tasks");
         const tasks = res.data;
 
         const enrichedTasks = tasks.map(task => ({
@@ -283,7 +283,7 @@ const ChatPage = ({ user, onLogout }) => {
 
       // Send to backend
       try {
-        await fetch('http://localhost:5000/store-interaction', {
+        await fetch('https://hmi-ai-prompting.onrender.com/store-interaction', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(interactionPayload)
@@ -329,7 +329,7 @@ const ChatPage = ({ user, onLogout }) => {
 
     try {
       // Optional: Send submission info to server
-      await axios.post('http://localhost:5000/submit-task', {
+      await axios.post('https://hmi-ai-prompting.onrender.com/submit-task', {
         participant_id: storedUser.participant_id,
         task_id: selectedChat.id,
       });

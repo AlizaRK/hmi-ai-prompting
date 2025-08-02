@@ -39,7 +39,7 @@ const RegistrationForm = ({ onRegistrationComplete }) => {
         consent: formData.consent,
       };
       try {
-        const res = await axios.post('http://localhost:5000/register', mappedData);
+        const res = await axios.post('https://hmi-ai-prompting.onrender.com/register', mappedData);
         const user = res.data.user;
         localStorage.setItem("user", JSON.stringify(user));
         console.log(res.data);

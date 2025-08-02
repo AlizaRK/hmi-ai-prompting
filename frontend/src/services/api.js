@@ -1,5 +1,5 @@
 // src/services/api.js
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'https://hmi-ai-prompting.onrender.com';
 
 class ApiService {
   constructor() {
