@@ -111,14 +111,19 @@ const ChatPage = ({ user, onLogout }) => {
     }
   }, [chats]);
 
-  const callPuterAI = async (prompt) => {
+  const callPuterAI = async (messages) => {
     if (!window.puter || !puterReady) {
       throw new Error('PuterJS is not ready yet');
     }
 
     try {
+      // If it's a string (old format), convert to array
+      const messageArray = typeof messages === 'string' 
+        ? [{ role: 'user', content: messages }]
+        : messages;
+
       // Pass through any options you need, e.g. model, temperature, max_tokens
-      const response = await window.puter.ai.chat(prompt, {
+      const response = await window.puter.ai.chat(messageArray, {
         model: selectedAI.toLowerCase(), 
         temperature: 0.7,
         max_tokens: 1000
@@ -199,6 +204,8 @@ const ChatPage = ({ user, onLogout }) => {
     // Show loading state
     setIsLoading(true);
 
+    let aiResponse;
+
     try {
       let aiResponseContent = '';
 
@@ -215,8 +222,19 @@ const ChatPage = ({ user, onLogout }) => {
             type: 'image'
           };
         } else {
-          // Use real GPT-4o via PuterJS for text
-          const aiResponseContent = await callPuterAI(content);
+            // Build conversation history for context
+          const conversationHistory = selectedChat.messages.map(msg => ({
+            role: msg.sender === 'user' ? 'user' : 'assistant',
+            content: msg.content
+          }));
+          
+          // Add current message
+          conversationHistory.push({
+            role: 'user',
+            content: content
+          });
+
+          const aiResponseContent = await callPuterAI(conversationHistory);
           aiResponse = {
             id: Date.now() + 1,
             content: aiResponseContent,
@@ -227,7 +245,6 @@ const ChatPage = ({ user, onLogout }) => {
           };
         }
       } else {
-        // Fallback to simulated response for other AIs
         const responseContent = messageType === 'image' 
           ? 'https://via.placeholder.com/512x512/4F46E5/FFFFFF?text=AI+Generated+Image+Placeholder'
           : `This is a simulated response from ${selectedAI}. In a real implementation, this would connect to your chosen AI API.`;
@@ -241,14 +258,6 @@ const ChatPage = ({ user, onLogout }) => {
           type: messageType === 'image' ? 'image' : 'text'
         };
       }
-
-      const aiResponse = {
-        id: Date.now() + 1,
-        content: aiResponseContent,
-        sender: 'ai',
-        timestamp: new Date().toISOString(),
-        model: selectedAI
-      };
       setChats(prevChats => 
         prevChats.map(chat => 
           chat.id === selectedChat.id 
@@ -325,7 +334,7 @@ const ChatPage = ({ user, onLogout }) => {
   };
 
   const handleSubmitTask = async () => {
-    if (!selectedChat || submittedTasks.includes(selectedChat.id)) return;
+    if (!selectedChat || !selectedChat.id || submittedTasks.includes(selectedChat.id)) return;
 
     try {
       // Optional: Send submission info to server
@@ -676,7 +685,7 @@ const ChatPage = ({ user, onLogout }) => {
 
         {/* Task Submit Button */}
         <div className="border-t border-gray-200 p-4 pt-2">
-          {submittedTasks.includes(selectedChat.id) ? (
+          {submittedTasks.includes(selectedChat?.id) ? (
             <div className="text-green-600 text-sm">✅ You have already submitted this task.</div>
           ) : (
             <button

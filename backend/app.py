@@ -70,12 +70,14 @@ def register():
             "details": response.json()
         }), response.status_code
 
+    inserted_user = response.json()[0]  # Get the first (and only) inserted record
+
     return jsonify({
         "message": "User registered successfully",
         "user": {
-            "email": response.json()["email"],
-            "name": response.json()["name"],
-            "participant_id": response.json()["id"]
+            "email": inserted_user["email"],
+            "name": inserted_user.get("name"),  # Use .get() for optional fields
+            "participant_id": inserted_user["id"]
             # never return password hash
         }
     }), 200
