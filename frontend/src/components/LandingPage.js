@@ -112,8 +112,8 @@ const LandingPage = () => {
               e.target.style.boxShadow = 'none';
             }}
           >
-            <h2 style={cardTitleStyle}>New User?</h2>
-            <p style={cardTextStyle}>Create an account to start chatting</p>
+            {/* <h2 style={cardTitleStyle}>New User?</h2> */}
+            <p style={cardTextStyle}>An account is required to start chatting</p>
             <Link 
               to="/register" 
               style={btnPrimaryStyle}
@@ -130,7 +130,7 @@ const LandingPage = () => {
             </Link>
           </div>
           
-          <div 
+          {/* <div 
             style={cardStyle}
             onMouseEnter={(e) => {
               e.target.style.transform = 'translateY(-5px)';
@@ -159,7 +159,7 @@ const LandingPage = () => {
             >
               Sign In
             </Link>
-          </div>
+          </div> */}
         </div>
         
         {/* <footer style={footerStyle}>

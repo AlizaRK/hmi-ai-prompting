@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Select from 'react-select'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
+import { AiOutlineInfoCircle } from "react-icons/ai";
+
 
 const RegistrationForm = ({ onRegistrationComplete }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -73,10 +75,19 @@ const RegistrationForm = ({ onRegistrationComplete }) => {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email Address
-            </label>
+          <div className="relative">
+            <div className="flex items-center gap-1 mb-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Email Address
+              </label>
+              <div className="relative group cursor-pointer">
+                <AiOutlineInfoCircle className="text-blue-500" size={16} />
+                <div className="absolute left-1/2 -translate-x-1/2 mt-1 w-72 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  If you are enrolled in Schwind: HMI - SoSe 2025, please enter your University email address to get 1 CR.
+                </div>
+              </div>
+            </div>
+
             <input
               type="text"
               required
@@ -86,7 +97,10 @@ const RegistrationForm = ({ onRegistrationComplete }) => {
             />
           </div>
 
-          <div className="relative">
+
+
+
+          {/* <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Create Password
             </label>
@@ -107,7 +121,7 @@ const RegistrationForm = ({ onRegistrationComplete }) => {
                 <EyeIcon className="h-5 w-5 text-gray-500" />
               )}
             </div>
-          </div>
+          </div> */}
 
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -512,7 +526,7 @@ const RegistrationForm = ({ onRegistrationComplete }) => {
               onChange={(e) => setFormData(prev => ({ ...prev, consent: e.target.checked }))}
             />
             <label htmlFor="consent" className="text-sm text-gray-700">
-              I have read and understood the informed consent information above. I voluntarily agree to participate in this research study.
+              I have read and understood the informed consent information on the previous page. I voluntarily agree to participate in this research study.
             </label>
           </div>
 

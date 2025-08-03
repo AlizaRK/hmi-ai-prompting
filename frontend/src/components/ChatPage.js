@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Send, User, MessageSquare, ChevronDown, Menu, X, Image as ImageIcon, Type } from 'lucide-react';
 import AccountPanel from './AccountPanel';
 import axios from 'axios';
-
+import TaskDescriptionPanel from './TaskDescriptionPanel';
 
 const ChatPage = ({ user, onLogout }) => {
   const [selectedChat, setSelectedChat] = useState(null);
@@ -16,12 +16,12 @@ const ChatPage = ({ user, onLogout }) => {
   const [messageType, setMessageType] = useState('text'); // 'text' or 'image'
   const messagesEndRef = useRef(null);
   const storedUser = JSON.parse(localStorage.getItem("user"));
+  const [isDescriptionVisible, setIsDescriptionVisible] = useState(false); // Fixed: using setIsDescriptionVisible
 
   const [submittedTasks, setSubmittedTasks] = useState(() => {
     const stored = localStorage.getItem('submittedTasks');
     return stored ? JSON.parse(stored) : [];
   });
-
 
   // Check if PuterJS is ready
   useEffect(() => {
@@ -35,42 +35,6 @@ const ChatPage = ({ user, onLogout }) => {
     };
     checkPuterReady();
   }, []);
-
-  // Sample chat topics for the study
-  // const chatTopics = [
-  //   {
-  //     id: 1,
-  //     title: "Vacation Planning",
-  //     task: "Ask AI to generate your ideal vacation picture",
-  //     messages: []
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Creative Writing",
-  //     task: "Ask AI to help you write a short story about friendship",
-  //     messages: []
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Recipe Creation",
-  //     task: "Ask AI to create a unique recipe using your favorite ingredients",
-  //     messages: []
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "Problem Solving",
-  //     task: "Ask AI to help you solve a daily life challenge",
-  //     messages: []
-  //   },
-  //   {
-  //     id: 5,
-  //     title: "Learning Assistant",
-  //     task: "Ask AI to explain a complex concept in simple terms",
-  //     messages: []
-  //   }
-  // ];
-
-  // const [chats, setChats] = useState(chatTopics);
 
   const [chats, setChats] = useState([]);
 
@@ -93,7 +57,6 @@ const ChatPage = ({ user, onLogout }) => {
 
     fetchTasks();
   }, []);
-
 
   const aiOptions = ['GPT-4o', 'Claude', 'Gemini', 'PaLM'];
 
@@ -301,7 +264,6 @@ const ChatPage = ({ user, onLogout }) => {
         console.error("Failed to store interaction", err);
       }
 
-
     } catch (error) {
       console.error('Error getting AI response:', error);
 
@@ -351,7 +313,6 @@ const ChatPage = ({ user, onLogout }) => {
     }
   };
 
-
   const handleSendMessage = () => {
     sendMessage(message);
     setMessage('');
@@ -389,7 +350,7 @@ const ChatPage = ({ user, onLogout }) => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 relative">
+    <div className="flex h-screen bg-gray-100 relative select-none">
       {/* Sidebar */}
       <div className={`bg-white border-r border-gray-200 transition-all duration-300 ${isSidebarOpen ? 'w-80' : 'w-0'
         } overflow-hidden relative`}>
@@ -463,6 +424,15 @@ const ChatPage = ({ user, onLogout }) => {
         onClose={() => setIsAccountPanelOpen(false)}
       />
 
+      {/* Task Description Panel - Fixed positioning */}
+      {isDescriptionVisible && selectedChat && (
+        <TaskDescriptionPanel 
+          description={selectedChat.description} 
+          isOpen={isDescriptionVisible}
+          onClose={() => setIsDescriptionVisible(false)} 
+        />
+      )}
+
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
@@ -478,13 +448,26 @@ const ChatPage = ({ user, onLogout }) => {
                 </button>
               )}
               <div>
-                <h1 className="text-xl font-semibold text-gray-800">
+                <h1 className="text-xl font-semibold text-gray-800 relative">
                   {selectedChat?.title || 'Select a Task'}
                 </h1>
                 {selectedChat && (
                   <p className="text-sm text-gray-600 mt-1">{selectedChat.task}</p>
                 )}
               </div>
+              {/* Fixed Show Description Button */}
+              {selectedChat && (
+                <div>
+                  <button
+                    onClick={() => setIsDescriptionVisible(!isDescriptionVisible)}  
+                    className="px-4 py-2 hover:bg-sky-700 rounded-md bg-sky-600 transition-colors"
+                  >
+                   <span className="text-white">
+                     {isDescriptionVisible ? 'Hide Description' : 'Show Description'}
+                   </span> 
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* AI Selection Dropdown */}
@@ -696,8 +679,6 @@ const ChatPage = ({ user, onLogout }) => {
             </button>
           )}
         </div>
-
-
       </div>
 
       {/* Account Icon for when sidebar is closed */}
