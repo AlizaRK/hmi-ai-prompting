@@ -8,7 +8,9 @@ from datetime import datetime
 
 
 app = Flask(__name__)
-CORS(app, origin="*")
+CORS(app, origins="*", 
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     allow_headers=["Content-Type", "Authorization"])
 
 load_dotenv(override=True)
 SUPABASE_URL = os.getenv("SUPABASE_URL")
