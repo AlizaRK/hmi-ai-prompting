@@ -4,7 +4,7 @@ export default function StudyIntro() {
   const navigate = useNavigate();
 
   const handleProceed = () => {
-    navigate("/chat"); // Or whatever your actual task route is
+    navigate("/personality-test"); // Or whatever your actual task route is
   };
 
   return (

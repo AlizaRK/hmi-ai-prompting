@@ -185,6 +185,75 @@ def submit_task():
 
     return jsonify({"message": "Task submitted", "ended_at": datetime.utcnow().isoformat()}), 200
 
+@app.route("/submit-personality-test", methods=["POST"])
+def submit_personality_test():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Missing JSON body"}), 400
+
+    # Validate required fields
+    participant_id = data.get("participant_id")
+    responses = data.get("responses")
+    dimensions = data.get("dimensions")
+
+    if not participant_id or not responses or not dimensions:
+        return jsonify({"error": "Missing required fields: participant_id, responses, or dimensions"}), 400
+
+    # Validate that we have all 10 responses
+    if len(responses) != 10:
+        return jsonify({"error": "All 10 responses are required"}), 400
+
+    # Prepare the payload for Supabase
+    personality_test_payload = {
+        "participant_id": participant_id,
+        "question_1": responses.get("1"),
+        "question_2": responses.get("2"),
+        "question_3": responses.get("3"),
+        "question_4": responses.get("4"),
+        "question_5": responses.get("5"),
+        "question_6": responses.get("6"),
+        "question_7": responses.get("7"),
+        "question_8": responses.get("8"),
+        "question_9": responses.get("9"),
+        "question_10": responses.get("10"),
+        "extraversion_score": dimensions.get("extraversion"),
+        "agreeableness_score": dimensions.get("agreeableness"),
+        "conscientiousness_score": dimensions.get("conscientiousness"),
+        "neuroticism_score": dimensions.get("neuroticism"),
+        "openness_score": dimensions.get("openness")
+    }
+
+    # Insert into Supabase
+    supabase_endpoint = f"{SUPABASE_URL}/rest/v1/personality_test"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
+
+    response = requests.post(supabase_endpoint, headers=headers, json=[personality_test_payload])
+
+    if response.status_code >= 400:
+        return jsonify({
+            "error": "Supabase insert failed",
+            "details": response.json()
+        }), response.status_code
+
+    inserted_record = response.json()[0]  # Get the first (and only) inserted record
+
+    return jsonify({
+        "message": "Personality test submitted successfully",
+        "test_id": inserted_record["id"],
+        "participant_id": inserted_record["participant_id"],
+        "scores": {
+            "extraversion": inserted_record["extraversion_score"],
+            "agreeableness": inserted_record["agreeableness_score"],
+            "conscientiousness": inserted_record["conscientiousness_score"],
+            "neuroticism": inserted_record["neuroticism_score"],
+            "openness": inserted_record["openness_score"]
+        }
+    }), 200
 
 @app.route("/store-interaction", methods=["POST"])
 def store_interaction():

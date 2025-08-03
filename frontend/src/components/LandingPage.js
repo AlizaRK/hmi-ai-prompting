@@ -99,9 +99,9 @@ const LandingPage = () => {
           <h1 style={titleStyle}>GenderPromptLens</h1>
           <p style={subtitleStyle}>Research Study</p>
         </header>
-        
+
         <div style={authOptionsStyle}>
-          <div 
+          <div
             style={cardStyle}
             onMouseEnter={(e) => {
               e.target.style.transform = 'translateY(-5px)';
@@ -113,9 +113,9 @@ const LandingPage = () => {
             }}
           >
             {/* <h2 style={cardTitleStyle}>New User?</h2> */}
-            <p style={cardTextStyle}>An account is required to start chatting</p>
-            <Link 
-              to="/register" 
+            <p style={cardTextStyle}>Please create an account to begin the research session</p>
+            <Link
+              to="/register"
               style={btnPrimaryStyle}
               onMouseEnter={(e) => {
                 e.target.style.background = '#ff5252';
@@ -129,7 +129,7 @@ const LandingPage = () => {
               Sign Up
             </Link>
           </div>
-          
+
           {/* <div 
             style={cardStyle}
             onMouseEnter={(e) => {
@@ -161,10 +161,14 @@ const LandingPage = () => {
             </Link>
           </div> */}
         </div>
-        
-        {/* <footer style={footerStyle}>
-          <p style={{ margin: 0, fontSize: '0.9rem' }}>© 2025 GenderPromptLens. All rights reserved.</p>
-        </footer> */}
+
+        <footer style={footerStyle}>
+          <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: '1.4' }}>
+            [Aliza, Salman Younus, Ikbela Halili, Muhammad Usama, Muhammad Berat Kurt] • Prof. [Prof. Dr. Valentin Schwind] (Supervisor)<br />
+            Frankfurt University of Applied Sciences<br />
+            Human-Computer Interaction • Summer Semester 2025
+          </p>
+        </footer>
       </div>
     </div>
   );

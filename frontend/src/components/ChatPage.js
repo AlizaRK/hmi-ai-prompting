@@ -4,7 +4,7 @@ import AccountPanel from './AccountPanel';
 import axios from 'axios';
 import TaskDescriptionPanel from './TaskDescriptionPanel';
 
-const ChatPage = ({ user, onLogout }) => {
+const ChatPage = ({ user, onLogout, onEndStudy }) => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [selectedAI, setSelectedAI] = useState('GPT-4o');
   const [isAIDropdownOpen, setIsAIDropdownOpen] = useState(false);
@@ -72,7 +72,13 @@ const ChatPage = ({ user, onLogout }) => {
     if (chats.length > 0 && !selectedChat) {
       setSelectedChat(chats[0]);
     }
-  }, [chats]);
+    // Set message type based on task type when chat changes
+    if (selectedChat && selectedChat.task_type === 'image') {
+      setMessageType('image');
+    } else if (selectedChat && selectedChat.task_type !== 'image') {
+      setMessageType('text');
+    }
+  }, [chats, selectedChat]);
 
   const callPuterAI = async (messages) => {
     if (!window.puter || !puterReady) {
@@ -81,13 +87,13 @@ const ChatPage = ({ user, onLogout }) => {
 
     try {
       // If it's a string (old format), convert to array
-      const messageArray = typeof messages === 'string' 
+      const messageArray = typeof messages === 'string'
         ? [{ role: 'user', content: messages }]
         : messages;
 
       // Pass through any options you need, e.g. model, temperature, max_tokens
       const response = await window.puter.ai.chat(messageArray, {
-        model: selectedAI.toLowerCase(), 
+        model: selectedAI.toLowerCase(),
         temperature: 0.7,
         max_tokens: 1000
       });
@@ -122,17 +128,29 @@ const ChatPage = ({ user, onLogout }) => {
     }
 
     try {
-      // Use puter.ai.txt2img for DALL-E 3 image generation
       const imageElement = await window.puter.ai.txt2img(prompt);
-      
-      // Extract the image URL from the element
-      if (imageElement && imageElement.src) {
-        return imageElement.src;
-      } else if (imageElement && typeof imageElement === 'string') {
-        return imageElement;
+      console.log('Generated Image Element:', imageElement);
+
+      // Handle different possible return types from PuterJS
+      if (imageElement) {
+        // If it's an image element with src
+        if (imageElement.src) {
+          return imageElement.src;
+        }
+        // If it's directly a URL string
+        if (typeof imageElement === 'string' &&
+          (imageElement.startsWith('data:') ||
+            imageElement.startsWith('blob:') ||
+            imageElement.startsWith('http'))) {
+          return imageElement;
+        }
+        // If it's an image element object
+        if (imageElement.tagName === 'IMG' && imageElement.src) {
+          return imageElement.src;
+        }
       }
-      
-      throw new Error('Invalid image response from PuterJS');
+
+      throw new Error('Image generation failed or returned invalid format');
     } catch (error) {
       console.error('PuterJS image generation failed:', error);
       throw error;
@@ -185,12 +203,12 @@ const ChatPage = ({ user, onLogout }) => {
             type: 'image'
           };
         } else {
-            // Build conversation history for context
+          // Build conversation history for context
           const conversationHistory = selectedChat.messages.map(msg => ({
             role: msg.sender === 'user' ? 'user' : 'assistant',
             content: msg.content
           }));
-          
+
           // Add current message
           conversationHistory.push({
             role: 'user',
@@ -208,10 +226,10 @@ const ChatPage = ({ user, onLogout }) => {
           };
         }
       } else {
-        const responseContent = messageType === 'image' 
+        const responseContent = messageType === 'image'
           ? 'https://via.placeholder.com/512x512/4F46E5/FFFFFF?text=AI+Generated+Image+Placeholder'
           : `This is a simulated response from ${selectedAI}. In a real implementation, this would connect to your chosen AI API.`;
-        
+
         aiResponse = {
           id: Date.now() + 1,
           content: responseContent,
@@ -221,9 +239,9 @@ const ChatPage = ({ user, onLogout }) => {
           type: messageType === 'image' ? 'image' : 'text'
         };
       }
-      setChats(prevChats => 
-        prevChats.map(chat => 
-          chat.id === selectedChat.id 
+      setChats(prevChats =>
+        prevChats.map(chat =>
+          chat.id === selectedChat.id
             ? { ...chat, messages: [...chat.messages, aiResponse] }
             : chat
         )
@@ -330,16 +348,21 @@ const ChatPage = ({ user, onLogout }) => {
       } else {
         return (
           <div className="space-y-2">
-            <img 
-              src={msg.content} 
-              alt="AI Generated Image" 
+            <img
+              src={msg.content}
+              alt="AI Generated Image"
               className="max-w-full h-auto rounded-lg border border-gray-200"
+              style={{ maxWidth: '400px', height: 'auto' }}
               onError={(e) => {
+                console.error('Image failed to load:', msg.content);
                 e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'block';
+                e.target.nextElementSibling.style.display = 'block';
+              }}
+              onLoad={() => {
+                console.log('Image loaded successfully:', msg.content);
               }}
             />
-            <div style={{display: 'none'}} className="text-red-600 text-sm">
+            <div style={{ display: 'none' }} className="text-red-600 text-sm">
               Failed to load image. URL: {msg.content}
             </div>
           </div>
@@ -358,22 +381,21 @@ const ChatPage = ({ user, onLogout }) => {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-800">Study Tasks</h2>
             <button
-              onClick={() => setIsSidebarOpen(false)}
-              className="md:hidden p-1 hover:bg-gray-100 rounded"
+              onClick={onEndStudy}
+              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm font-medium"
             >
-              <X size={20} />
+              End Task
             </button>
           </div>
           <div className="text-sm text-gray-600">
-            Welcome, {user?.fullName}
+            Welcome, {user?.fullName}. Please perform all the tasks listed below.
           </div>
           {/* PuterJS Status Indicator */}
           <div className="mt-2 text-xs">
-            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-              puterReady 
-                ? 'bg-green-100 text-green-800' 
-                : 'bg-yellow-100 text-yellow-800'
-            }`}>
+            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${puterReady
+              ? 'bg-green-100 text-green-800'
+              : 'bg-yellow-100 text-yellow-800'
+              }`}>
               {puterReady ? '🟢 PuterJS Ready (Text + Images)' : '🟡 Loading PuterJS...'}
             </span>
           </div>
@@ -401,35 +423,15 @@ const ChatPage = ({ user, onLogout }) => {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Account Icon - Fixed at bottom left of sidebar */}
-        <div className="absolute bottom-4 left-4">
-          <button
-            onClick={() => setIsAccountPanelOpen(!isAccountPanelOpen)}
-            className="flex items-center space-x-2 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
-          >
-            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-              <User size={16} className="text-white" />
-            </div>
-          </button>
-        </div>
+        </div>        
       </div>
-
-      {/* Account Panel */}
-      <AccountPanel
-        user={user}
-        onLogout={onLogout}
-        isOpen={isAccountPanelOpen}
-        onClose={() => setIsAccountPanelOpen(false)}
-      />
 
       {/* Task Description Panel - Fixed positioning */}
       {isDescriptionVisible && selectedChat && (
-        <TaskDescriptionPanel 
-          description={selectedChat.description} 
+        <TaskDescriptionPanel
+          description={selectedChat.description}
           isOpen={isDescriptionVisible}
-          onClose={() => setIsDescriptionVisible(false)} 
+          onClose={() => setIsDescriptionVisible(false)}
         />
       )}
 
@@ -459,12 +461,12 @@ const ChatPage = ({ user, onLogout }) => {
               {selectedChat && (
                 <div>
                   <button
-                    onClick={() => setIsDescriptionVisible(!isDescriptionVisible)}  
+                    onClick={() => setIsDescriptionVisible(!isDescriptionVisible)}
                     className="px-4 py-2 hover:bg-sky-700 rounded-md bg-sky-600 transition-colors"
                   >
-                   <span className="text-white">
-                     {isDescriptionVisible ? 'Hide Description' : 'Show Description'}
-                   </span> 
+                    <span className="text-white">
+                      {isDescriptionVisible ? 'Hide Description' : 'Show Description'}
+                    </span>
                   </button>
                 </div>
               )}
@@ -524,7 +526,7 @@ const ChatPage = ({ user, onLogout }) => {
                       ? 'bg-red-50 border border-red-200 text-red-800'
                       : 'bg-white border border-gray-200 text-gray-800'
                     }`}>
-                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                    {renderMessage(msg)}
                     <div className={`text-xs mt-1 flex items-center justify-between ${msg.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
                       }`}>
                       <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
@@ -546,7 +548,7 @@ const ChatPage = ({ user, onLogout }) => {
                     <div className="flex items-center space-x-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
                       <span className="text-gray-600">
-                        {messageType === 'image' 
+                        {messageType === 'image'
                           ? `${selectedAI} is generating image...`
                           : `${selectedAI} is thinking...`}
                       </span>
@@ -560,37 +562,36 @@ const ChatPage = ({ user, onLogout }) => {
 
             {/* Message Input */}
             <div className="border-t border-gray-200 p-4">
-              {/* Message Type Toggle */}
-              <div className="flex items-center space-x-2 mb-3">
-                <span className="text-sm text-gray-600">Mode:</span>
-                <button
-                  onClick={() => setMessageType('text')}
-                  className={`flex items-center space-x-1 px-3 py-1 rounded-md text-sm transition-colors ${
-                    messageType === 'text' 
-                      ? 'bg-blue-600 text-white' 
+              {/* Message Type Toggle - Only show if task_type is not 'image' */}
+              {selectedChat?.task_type !== 'image' && (
+                <div className="flex items-center space-x-2 mb-3">
+                  <span className="text-sm text-gray-600">Mode:</span>
+                  <button
+                    onClick={() => setMessageType('text')}
+                    className={`flex items-center space-x-1 px-3 py-1 rounded-md text-sm transition-colors ${messageType === 'text'
+                      ? 'bg-blue-600 text-white'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  <Type size={14} />
-                  <span>Text</span>
-                </button>
-                <button
-                  onClick={() => setMessageType('image')}
-                  className={`flex items-center space-x-1 px-3 py-1 rounded-md text-sm transition-colors ${
-                    messageType === 'image' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  } ${selectedAI !== 'GPT-4o' || !puterReady ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  disabled={selectedAI !== 'GPT-4o' || !puterReady}
-                  title={selectedAI !== 'GPT-4o' ? 'Image generation only available with GPT-4o' : !puterReady ? 'Waiting for PuterJS to load' : ''}
-                >
-                  <ImageIcon size={14} />
-                  <span>Image</span>
-                  {selectedAI === 'GPT-4o' && puterReady && (
-                    <span className="text-xs bg-white bg-opacity-20 px-1 rounded">DALL-E 3</span>
-                  )}
-                </button>
-              </div>
+                      }`}
+                  >
+                    <Type size={14} />
+                    <span>Text</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Show current mode for image tasks */}
+              {selectedChat?.task_type === 'image' && (
+                <div className="flex items-center space-x-2 mb-3">
+                  <span className="text-sm text-gray-600">Mode:</span>
+                  <div className="flex items-center space-x-1 px-3 py-1 rounded-md text-sm bg-blue-600 text-white">
+                    <ImageIcon size={14} />
+                    <span>Image Generation</span>
+                    {selectedAI === 'GPT-4o' && puterReady && (
+                      <span className="text-xs bg-white bg-opacity-20 px-1 rounded">DALL-E 3</span>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div className="flex space-x-3">
                 <input
@@ -602,8 +603,8 @@ const ChatPage = ({ user, onLogout }) => {
                       ? selectedAI === 'GPT-4o' && puterReady
                         ? "Describe the image you want to generate..."
                         : "Image generation only available with GPT-4o"
-                      : selectedAI === 'GPT-4o' && !puterReady 
-                        ? 'Waiting for PuterJS to load...' 
+                      : selectedAI === 'GPT-4o' && !puterReady
+                        ? 'Waiting for PuterJS to load...'
                         : `Type your message to ${selectedAI}...`
                   }
                   disabled={isLoading || (selectedAI === 'GPT-4o' && !puterReady) || (messageType === 'image' && selectedAI !== 'GPT-4o')}
@@ -657,8 +658,8 @@ const ChatPage = ({ user, onLogout }) => {
               <p>Select a task from the sidebar to begin</p>
               {selectedAI === 'GPT-4o' && (
                 <p className="mt-2 text-sm">
-                  {puterReady 
-                    ? '✅ GPT-4o + DALL-E 3 ready via PuterJS' 
+                  {puterReady
+                    ? '✅ GPT-4o + DALL-E 3 ready via PuterJS'
                     : '⏳ Loading PuterJS...'}
                 </p>
               )}
@@ -669,7 +670,7 @@ const ChatPage = ({ user, onLogout }) => {
         {/* Task Submit Button */}
         <div className="border-t border-gray-200 p-4 pt-2">
           {submittedTasks.includes(selectedChat?.id) ? (
-            <div className="text-green-600 text-sm">✅ You have already submitted this task.</div>
+            <div className="text-green-600 text-sm">✅ You have already submitted this task. {submittedTasks.find(task => task.id === selectedChat?.id)?.timestamp}</div>
           ) : (
             <button
               onClick={handleSubmitTask}
@@ -681,7 +682,7 @@ const ChatPage = ({ user, onLogout }) => {
         </div>
       </div>
 
-      {/* Account Icon for when sidebar is closed */}
+      {/* Account Icon for when sidebar is closed
       {!isSidebarOpen && (
         <div className="absolute bottom-4 left-4 z-40">
           <button
@@ -691,9 +692,9 @@ const ChatPage = ({ user, onLogout }) => {
             <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
               <User size={16} className="text-white" />
             </div>
-          </button>
+          </button>a
         </div>
-      )}
+      )} */}
     </div>
   );
 };

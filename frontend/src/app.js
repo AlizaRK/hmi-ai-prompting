@@ -5,6 +5,8 @@ import RegistrationPage from './components/RegistrationPage';
 import ChatPage from './components/ChatPage';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import StudyIntro from './components/StudyIntro';
+import ThankYou from './components/ThankYou';
+import PersonalityTest from './components/PersonalityTest';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -52,6 +54,7 @@ const App = () => {
           }
         />
 
+        {/* Study Intro page */}
         <Route
           path="/study-intro"
           element={
@@ -61,13 +64,34 @@ const App = () => {
           }
         />
 
+        {/* Thank You page */}
+        <Route
+          path="/thank-you"
+          element={
+            user ?
+              <ThankYou /> :
+              <Navigate to="/" replace />
+          }
+        />
+
         {/* Chat page */}
         <Route
           path="/chat"
           element={
             user ?
-              <ChatPage user={user} onLogout={handleLogout} /> :
+            <ChatPage user={user} onLogout={handleLogout} onEndStudy={() => window.location.hash = '/thank-you'}  /> :
               <Navigate to="/" replace />
+              
+          }
+        />
+
+        <Route
+          path="/personality-test"
+          element={
+            user ?
+            <PersonalityTest onComplete={() => window.location.hash = '/chat'} /> :
+              <Navigate to="/" replace />
+              
           }
         />
 
