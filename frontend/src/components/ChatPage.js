@@ -41,7 +41,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await axios.get("https://hmi-ai-prompting.onrender.com/tasks");
+        const res = await axios.get("http://hmi-backend-env.eba-rrkbxtkb.eu-central-1.elasticbeanstalk.com/tasks");
         const tasks = res.data;
 
         const enrichedTasks = tasks.map(task => ({
@@ -325,7 +325,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
 
       // Send to backend
       try {
-        await fetch('https://hmi-ai-prompting.onrender.com/store-interaction', {
+        await fetch('http://hmi-backend-env.eba-rrkbxtkb.eu-central-1.elasticbeanstalk.com/store-interaction', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(interactionPayload)
@@ -370,7 +370,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
 
     try {
       // Optional: Send submission info to server
-      await axios.post('https://hmi-ai-prompting.onrender.com/submit-task', {
+      await axios.post('http://hmi-backend-env.eba-rrkbxtkb.eu-central-1.elasticbeanstalk.com/submit-task', {
         participant_id: storedUser.participant_id,
         task_id: selectedChat.id,
       });

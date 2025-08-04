@@ -1,5 +1,5 @@
 // src/services/api.js
-const API_URL = process.env.REACT_APP_API_URL || 'https://hmi-ai-prompting.onrender.com/';
+const API_URL = process.env.REACT_APP_API_URL || 'http://hmi-backend-env.eba-rrkbxtkb.eu-central-1.elasticbeanstalk.com/';
 
 class ApiService {
   constructor() {

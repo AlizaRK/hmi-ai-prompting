@@ -22,7 +22,7 @@ const LoginPage = ({ onLoginComplete }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const res = await axios.post('https://hmi-ai-prompting.onrender.com/login', formData);
+        const res = await axios.post('http://hmi-backend-env.eba-rrkbxtkb.eu-central-1.elasticbeanstalk.com/login', formData);
         const user = res.data.user;
         localStorage.setItem("user", JSON.stringify(user));
         onLoginComplete(res.data);
