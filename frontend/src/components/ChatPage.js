@@ -16,7 +16,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
   const [messageType, setMessageType] = useState('text'); // 'text' or 'image'
   const messagesEndRef = useRef(null);
   const storedUser = JSON.parse(localStorage.getItem("user"));
-  const [isDescriptionVisible, setIsDescriptionVisible] = useState(false); // Fixed: using setIsDescriptionVisible
+  const [isDescriptionVisible, setIsDescriptionVisible] = useState(false);
 
   const [submittedTasks, setSubmittedTasks] = useState(() => {
     const stored = localStorage.getItem('submittedTasks');
@@ -122,13 +122,58 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     }
   };
 
-  const callPuterImageGeneration = async (prompt) => {
+  // Helper function to build contextual prompt for image generation
+  const buildImagePromptWithContext = (currentPrompt, conversationHistory) => {
+    if (conversationHistory.length === 0) {
+      return currentPrompt;
+    }
+
+    // Extract relevant context from conversation history
+    const contextualInfo = [];
+    
+    // Look for previous image requests and descriptions
+    const previousImageRequests = conversationHistory
+      .filter(msg => msg.type === 'image' && msg.sender === 'user')
+      .slice(-3) // Get last 3 image requests for context
+      .map(msg => msg.content);
+
+    // Look for relevant text context (style preferences, themes, etc.)
+    const textContext = conversationHistory
+      .filter(msg => msg.type === 'text' && msg.sender === 'user')
+      .slice(-2) // Get last 2 text messages for context
+      .map(msg => msg.content)
+      .join(' ');
+
+    // Build enhanced prompt with context
+    let enhancedPrompt = currentPrompt;
+
+    if (previousImageRequests.length > 0) {
+      enhancedPrompt = `Building on previous image requests (${previousImageRequests.join(', ')}), create: ${currentPrompt}`;
+    }
+
+    if (textContext && textContext.length > 0) {
+      enhancedPrompt += `. Consider this context: ${textContext}`;
+    }
+
+    // Limit prompt length to avoid API limits
+    if (enhancedPrompt.length > 500) {
+      enhancedPrompt = enhancedPrompt.substring(0, 500) + '...';
+    }
+
+    return enhancedPrompt;
+  };
+
+  const callPuterImageGeneration = async (prompt, conversationHistory = []) => {
     if (!window.puter || !puterReady) {
       throw new Error('PuterJS is not ready yet');
     }
 
     try {
-      const imageElement = await window.puter.ai.txt2img(prompt);
+      // Build contextual prompt
+      const contextualPrompt = buildImagePromptWithContext(prompt, conversationHistory);
+      console.log('Enhanced image prompt with context:', contextualPrompt);
+
+      const imageElement = await window.puter.ai.txt2img(contextualPrompt);
       console.log('Generated Image Element:', imageElement);
 
       // Handle different possible return types from PuterJS
@@ -192,8 +237,8 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
 
       if (selectedAI === 'GPT-4o' && puterReady) {
         if (messageType === 'image') {
-          // Generate image using PuterJS DALL-E 3
-          const imageUrl = await callPuterImageGeneration(content);
+          // Generate image using PuterJS DALL-E 3 with conversation context
+          const imageUrl = await callPuterImageGeneration(content, selectedChat.messages);
           aiResponse = {
             id: Date.now() + 1,
             content: imageUrl,
@@ -202,6 +247,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
             model: selectedAI,
             type: 'image'
           };
+          aiResponseContent = imageUrl; // For interaction logging
         } else {
           // Build conversation history for context
           const conversationHistory = selectedChat.messages.map(msg => ({
@@ -215,7 +261,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
             content: content
           });
 
-          const aiResponseContent = await callPuterAI(conversationHistory);
+          aiResponseContent = await callPuterAI(conversationHistory);
           aiResponse = {
             id: Date.now() + 1,
             content: aiResponseContent,
@@ -227,8 +273,8 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
         }
       } else {
         const responseContent = messageType === 'image'
-          ? 'https://via.placeholder.com/512x512/4F46E5/FFFFFF?text=AI+Generated+Image+Placeholder'
-          : `This is a simulated response from ${selectedAI}. In a real implementation, this would connect to your chosen AI API.`;
+          ? 'https://via.placeholder.com/512x512/4F46E5/FFFFFF?text=AI+Generated+Image+Placeholder+(Context-Aware)'
+          : `This is a simulated response from ${selectedAI}. In a real implementation, this would connect to your chosen AI API with full conversation context.`;
 
         aiResponse = {
           id: Date.now() + 1,
@@ -238,7 +284,9 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
           model: selectedAI,
           type: messageType === 'image' ? 'image' : 'text'
         };
+        aiResponseContent = responseContent;
       }
+
       setChats(prevChats =>
         prevChats.map(chat =>
           chat.id === selectedChat.id
@@ -251,22 +299,26 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
         ...prev,
         messages: [...prev.messages, aiResponse]
       }));
+
       // Prepare interaction + message payload
       console.log(storedUser);
       const interactionPayload = {
-        participant_id: storedUser.participant_id, // or user.id if available
-        task_id: selectedChat.id,   // assuming task.id is chat.id
+        participant_id: storedUser.participant_id,
+        task_id: selectedChat.id,
         ai_tool: selectedAI,
+        message_type: messageType, // Add message type to interaction log
         messages: [
           {
             sender: 'user',
             content,
             timestamp: newMessage.timestamp,
+            type: messageType
           },
           {
             sender: 'ai',
             content: aiResponseContent,
-            timestamp: new Date().toISOString(),
+            timestamp: aiResponse.timestamp,
+            type: aiResponse.type
           }
         ]
       };
@@ -396,7 +448,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
               ? 'bg-green-100 text-green-800'
               : 'bg-yellow-100 text-yellow-800'
               }`}>
-              {puterReady ? '🟢 PuterJS Ready (Text + Images)' : '🟡 Loading PuterJS...'}
+              {puterReady ? '🟢 PuterJS Ready (Context-Aware Text + Images)' : '🟡 Loading PuterJS...'}
             </span>
           </div>
         </div>
@@ -549,7 +601,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
                       <span className="text-gray-600">
                         {messageType === 'image'
-                          ? `${selectedAI} is generating image...`
+                          ? `${selectedAI} is generating context-aware image...`
                           : `${selectedAI} is thinking...`}
                       </span>
                     </div>
@@ -585,7 +637,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                   <span className="text-sm text-gray-600">Mode:</span>
                   <div className="flex items-center space-x-1 px-3 py-1 rounded-md text-sm bg-blue-600 text-white">
                     <ImageIcon size={14} />
-                    <span>Image Generation</span>
+                    <span>Context-Aware Image Generation</span>
                     {selectedAI === 'GPT-4o' && puterReady && (
                       <span className="text-xs bg-white bg-opacity-20 px-1 rounded">DALL-E 3</span>
                     )}
@@ -601,8 +653,8 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                   placeholder={
                     messageType === 'image'
                       ? selectedAI === 'GPT-4o' && puterReady
-                        ? "Describe the image you want to generate..."
-                        : "Image generation only available with GPT-4o"
+                        ? "Describe the image you want to generate (context from conversation will be included)..."
+                        : "Context-aware image generation only available with GPT-4o"
                       : selectedAI === 'GPT-4o' && !puterReady
                         ? 'Waiting for PuterJS to load...'
                         : `Type your message to ${selectedAI}...`
@@ -635,14 +687,14 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
               <div className="mt-2 text-xs text-gray-500">
                 {selectedAI === 'GPT-4o' && puterReady && (
                   <span className="text-green-600">
-                    ✅ Ready for {messageType === 'image' ? 'DALL-E 3 image generation' : 'GPT-4o text chat'}
+                    ✅ Ready for {messageType === 'image' ? 'context-aware DALL-E 3 image generation' : 'GPT-4o text chat'}
                   </span>
                 )}
                 {selectedAI === 'GPT-4o' && !puterReady && (
                   <span className="text-yellow-600">⏳ Loading PuterJS for GPT-4o access...</span>
                 )}
                 {selectedAI !== 'GPT-4o' && messageType === 'image' && (
-                  <span className="text-orange-600">⚠️ Image generation only available with GPT-4o</span>
+                  <span className="text-orange-600">⚠️ Context-aware image generation only available with GPT-4o</span>
                 )}
                 {selectedAI !== 'GPT-4o' && messageType === 'text' && (
                   <span className="text-blue-600">ℹ️ Using simulated {selectedAI} responses</span>
@@ -659,7 +711,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
               {selectedAI === 'GPT-4o' && (
                 <p className="mt-2 text-sm">
                   {puterReady
-                    ? '✅ GPT-4o + DALL-E 3 ready via PuterJS'
+                    ? '✅ GPT-4o + Context-Aware DALL-E 3 ready via PuterJS'
                     : '⏳ Loading PuterJS...'}
                 </p>
               )}
@@ -681,20 +733,6 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
           )}
         </div>
       </div>
-
-      {/* Account Icon for when sidebar is closed
-      {!isSidebarOpen && (
-        <div className="absolute bottom-4 left-4 z-40">
-          <button
-            onClick={() => setIsAccountPanelOpen(!isAccountPanelOpen)}
-            className="flex items-center space-x-2 p-2 bg-white border border-gray-200 hover:bg-gray-50 rounded-full shadow-lg transition-colors"
-          >
-            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-              <User size={16} className="text-white" />
-            </div>
-          </button>a
-        </div>
-      )} */}
     </div>
   );
 };
