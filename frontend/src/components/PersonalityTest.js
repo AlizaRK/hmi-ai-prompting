@@ -82,7 +82,7 @@ const PersonalityTest = ({ onComplete }) => {
 
       // Call your backend API
       const response = await axios.post(
-        'http://hmi-backend-env.eba-rrkbxtkb.eu-central-1.elasticbeanstalk.com/submit-personality-test',
+        'https://hmi-backend-env.eba-rrkbxtkb.eu-central-1.elasticbeanstalk.com/submit-personality-test',
         payload
       );
       
