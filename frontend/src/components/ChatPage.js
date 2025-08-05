@@ -58,10 +58,10 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     fetchTasks();
   }, []);
 
-  // Updated AI options with Claude Sonnet 4
-  const aiOptions = ['GPT-4o', 'Claude Sonnet 4', 'Gemini', 'PaLM'];
+  // Updated AI options - only implemented models
+  const aiOptions = ['GPT-4o', 'Claude Sonnet 4'];
 
-  // AI configuration mapping
+  // AI configuration mapping - only implemented models
   const getAIConfig = (aiName) => {
     switch (aiName) {
       case 'GPT-4o':
@@ -74,18 +74,6 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
         return {
           puterModel: 'claude-sonnet-4-20250514', // Using the model string from your system message
           supportsImages: false, // Claude Sonnet 4 doesn't support image generation
-          requiresPuter: true
-        };
-      case 'Gemini':
-        return {
-          puterModel: 'gemini-pro',
-          supportsImages: false,
-          requiresPuter: true
-        };
-      case 'PaLM':
-        return {
-          puterModel: 'palm-2',
-          supportsImages: false,
           requiresPuter: true
         };
       default:
@@ -544,7 +532,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
               ? 'bg-green-100 text-green-800'
               : 'bg-yellow-100 text-yellow-800'
               }`}>
-              {puterReady ? '🟢 PuterJS Ready (Multi-AI Support)' : '🟡 Loading PuterJS...'}
+              {puterReady ? '🟢 PuterJS Ready (GPT-4o + DALL-E 3, Claude Sonnet 4)' : '🟡 Loading PuterJS...'}
             </span>
           </div>
         </div>
@@ -824,7 +812,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
               <p>Select a task from the sidebar to begin</p>
               <p className="mt-2 text-sm">
                 {puterReady
-                  ? '✅ Multi-AI support ready via PuterJS (GPT-4o, Claude Sonnet 4, Gemini, PaLM)'
+                  ? '✅ Multi-AI support ready via PuterJS (GPT-4o + DALL-E 3, Claude Sonnet 4)'
                   : '⏳ Loading PuterJS...'}
               </p>
             </div>
