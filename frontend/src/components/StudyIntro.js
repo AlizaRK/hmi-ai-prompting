@@ -17,11 +17,20 @@ export default function StudyIntro() {
         </p>
 
         <div className="text-left text-gray-700 mb-6">
-          <p className="font-semibold mb-2">The study consists of three stages:</p>
+          <p className="font-semibold mb-2">The study includes three stages:</p>
           <ol className="list-decimal list-inside space-y-1">
-            <li>Personality test</li>
-            <li>Task completion — you will interact with ChatGPT for each task and submit your responses</li>
-            <li>Post-study questionnaire</li>
+            <li>
+              <strong>Personality Test</strong> — A short questionnaire to assess your personality traits.
+            </li>
+            <li>
+              <strong>Task Completion</strong> — You will be given several tasks to complete by interacting with ChatGPT.
+              - Click <em>"Show Description"</em> to view detailed instructions for each task.
+              - After submitting a task, proceed directly to the next one.
+              - For image generation tasks, allow a short waiting period for results to appear before moving on.
+            </li>
+            <li>
+              <strong>Post-Study Questionnaire</strong> — A brief survey to share your experience and feedback.
+            </li>
           </ol>
         </div>
 
