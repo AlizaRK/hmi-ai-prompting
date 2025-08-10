@@ -3,6 +3,7 @@ import LandingPage from './components/LandingPage';
 import LoginPage from './components/LoginPage';
 import RegistrationPage from './components/RegistrationPage';
 import ChatPage from './components/ChatPage';
+import PostStudyQuestionnaire from './components/PostStudyQuestionare';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import StudyIntro from './components/StudyIntro';
 import ThankYou from './components/ThankYou';
@@ -21,6 +22,14 @@ const App = () => {
 
   const handleLogout = () => {
     setUser(null);
+  };
+
+  const handleEndStudy = () => {
+    window.location.hash = '/post-study-questionnaire';
+  };
+
+  const handleQuestionnaireComplete = () => {
+    window.location.hash = '/thank-you';
   };
 
   return (
@@ -64,6 +73,19 @@ const App = () => {
           }
         />
 
+        {/* Post-Study Questionnaire page */}
+        <Route
+          path="/post-study-questionnaire"
+          element={
+            user ?
+              <PostStudyQuestionnaire 
+                user={user} 
+                onComplete={handleQuestionnaireComplete} 
+              /> :
+              <Navigate to="/" replace />
+          }
+        />
+
         {/* Thank You page */}
         <Route
           path="/thank-you"
@@ -79,19 +101,22 @@ const App = () => {
           path="/chat"
           element={
             user ?
-            <ChatPage user={user} onLogout={handleLogout} onEndStudy={() => window.location.hash = '/thank-you'}  /> :
+              <ChatPage 
+                user={user} 
+                onLogout={handleLogout} 
+                onEndStudy={handleEndStudy}
+              /> :
               <Navigate to="/" replace />
-              
           }
         />
 
+        {/* Personality Test page */}
         <Route
           path="/personality-test"
           element={
             user ?
-            <PersonalityTest onComplete={() => window.location.hash = '/chat'} /> :
+              <PersonalityTest onComplete={() => window.location.hash = '/chat'} /> :
               <Navigate to="/" replace />
-              
           }
         />
 

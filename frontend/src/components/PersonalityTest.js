@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { CheckCircle, User, ArrowRight } from 'lucide-react';
+import axios from 'axios';
 
 const PersonalityTest = ({ onComplete }) => {
   const [responses, setResponses] = useState({});
   const [currentPage, setCurrentPage] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   // BFI-10 Items (Rammstedt & John, 2007)
   const items = [
@@ -57,23 +60,51 @@ const PersonalityTest = ({ onComplete }) => {
 
   const sendToBackend = async (personalityData) => {
     try {
-      // Mimic backend API call
-      const response = await fetch('/api/personality-assessment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(personalityData)
-      });
+      setIsSubmitting(true);
+      setError('');
       
-      if (!response.ok) {
-        throw new Error('Failed to save personality data');
+      // Get user from localStorage
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const participant_id = user.participant_id;
+      
+      if (!participant_id) {
+        throw new Error('User not found. Please log in again.');
       }
+
+      // Prepare payload according to your backend API
+      const payload = {
+        participant_id: participant_id,
+        responses: personalityData.responses,
+        dimensions: personalityData.dimensions
+      };
+
+      console.log('Sending personality test data:', payload);
+
+      // Call your backend API
+      const response = await axios.post(
+        'https://api.hmi-ai-prompting.shop/submit-personality-test',
+        payload
+      );
       
-      console.log('Personality data saved successfully');
+      console.log('Personality test submitted successfully:', response.data);
+      return response.data;
+      
     } catch (error) {
       console.error('Error saving personality data:', error);
-      // In a real app, you might want to show an error message or retry
+      
+      let errorMessage = 'Failed to save personality test results. ';
+      if (error.response?.data?.error) {
+        errorMessage += error.response.data.error;
+      } else if (error.message) {
+        errorMessage += error.message;
+      } else {
+        errorMessage += 'Please try again.';
+      }
+      
+      setError(errorMessage);
+      throw error;
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -81,29 +112,38 @@ const PersonalityTest = ({ onComplete }) => {
     if (currentPage < totalPages - 1) {
       setCurrentPage(currentPage + 1);
     } else {
-      // Calculate results
-      const calculatedResults = calculateResults();
-      
-      // Prepare data object for backend
-      const personalityData = {
-        timestamp: new Date().toISOString(),
-        responses: responses, // Raw responses (1-5 for each item)
-        items: items, // Include items for context (which items were reverse-scored, etc.)
-        dimensions: calculatedResults, // Calculated dimension scores
-        metadata: {
-          testVersion: 'BFI-10',
-          totalItems: items.length,
-          completedItems: Object.keys(responses).length,
-          testDuration: null // Could track this if needed
+      try {
+        // Calculate results
+        const calculatedResults = calculateResults();
+        
+        // Prepare data object for backend
+        const personalityData = {
+          timestamp: new Date().toISOString(),
+          responses: responses, // Raw responses (1-5 for each item)
+          items: items, // Include items for context (which items were reverse-scored, etc.)
+          dimensions: calculatedResults, // Calculated dimension scores
+          metadata: {
+            testVersion: 'BFI-10',
+            totalItems: items.length,
+            completedItems: Object.keys(responses).length,
+            testDuration: null // Could track this if needed
+          }
+        };
+        
+        // Send to backend
+        const result = await sendToBackend(personalityData);
+        
+        // Proceed to tasks on success
+        if (onComplete) {
+          onComplete({
+            ...calculatedResults,
+            testId: result.test_id // Include the test ID from backend response
+          });
         }
-      };
-      
-      // Send to backend (won't actually work in this demo environment)
-      await sendToBackend(personalityData);
-      
-      // Directly proceed to tasks without showing results
-      if (onComplete) {
-        onComplete(calculatedResults);
+        
+      } catch (error) {
+        // Error is already handled in sendToBackend
+        // User can see the error message and try again
       }
     }
   };
@@ -145,6 +185,13 @@ const PersonalityTest = ({ onComplete }) => {
             </p>
           </div>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-800 text-sm">{error}</p>
+          </div>
+        )}
 
         {/* Progress */}
         <div className="mb-8">
@@ -191,6 +238,7 @@ const PersonalityTest = ({ onComplete }) => {
                       checked={responses[item.id] === option.value}
                       onChange={(e) => handleResponse(item.id, e.target.value)}
                       className="mr-3"
+                      disabled={isSubmitting}
                     />
                     <div>
                       <div className="font-medium text-gray-800">{option.value}</div>
@@ -207,7 +255,7 @@ const PersonalityTest = ({ onComplete }) => {
         <div className="flex justify-between">
           <button
             onClick={handlePrevious}
-            disabled={currentPage === 0}
+            disabled={currentPage === 0 || isSubmitting}
             className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Previous
@@ -215,10 +263,15 @@ const PersonalityTest = ({ onComplete }) => {
           
           <button
             onClick={handleNext}
-            disabled={!isCurrentPageComplete()}
+            disabled={!isCurrentPageComplete() || isSubmitting}
             className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
-            {currentPage === totalPages - 1 ? (
+            {isSubmitting ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                Submitting...
+              </>
+            ) : currentPage === totalPages - 1 ? (
               <>
                 <CheckCircle size={20} />
                 Continue to Tasks

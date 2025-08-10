@@ -5,7 +5,7 @@ import requests
 import bcrypt
 from flask_cors import CORS
 from datetime import datetime
-
+from openai import OpenAI
 
 app = Flask(__name__)
 CORS(app, origins="*", 
@@ -15,7 +15,17 @@ CORS(app, origins="*",
 load_dotenv(override=True)
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-SUPABASE_TABLE = "participant"  # or your actual table name
+SUPABASE_TABLE = "participant"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Initialize OpenAI client - handle None API key
+openai_client = None
+if OPENAI_API_KEY:
+    try:
+        openai_client = OpenAI(api_key=OPENAI_API_KEY)
+        print(OPENAI_API_KEY)
+    except Exception as e:
+        print(f"Warning: Failed to initialize OpenAI client: {e}")
 
 
 @app.route("/participants", methods=["GET"])
@@ -123,6 +133,85 @@ def login():
             # never return password hash
         }
     }), 200
+
+# OpenAI Chat endpoint
+@app.route("/openai-chat", methods=["POST"])
+def openai_chat():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Missing JSON body"}), 400
+
+    messages = data.get("messages", [])
+    # model = "gpt-5-mini"
+    model = "gpt-4o-mini"
+    
+    if not messages:
+        return jsonify({"error": "Messages are required"}), 400
+
+    try:
+        if not openai_client:
+            return jsonify({"error": "OpenAI client not initialized"}), 500
+
+        response = openai_client.chat.completions.create(
+            model=model,
+            messages=messages,
+            temperature=0.7,
+            # max_completion_tokens=100000
+        )
+        
+        print("[/openai-chat] requested:", model, "| used:", getattr(response, "model", None))
+        # print("[/openai-chat]:", response)
+
+        return jsonify({
+            "content": response.choices[0].message.content,
+            "model": model,
+            "usage": {
+                "prompt_tokens": response.usage.prompt_tokens,
+                "completion_tokens": response.usage.completion_tokens,
+                "total_tokens": response.usage.total_tokens
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": f"OpenAI API error: {str(e)}"}), 500
+
+# OpenAI Image Generation endpoint
+@app.route("/openai-image", methods=["POST"])
+def openai_image():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Missing JSON body"}), 400
+
+    prompt = data.get("prompt", "")
+    model = "gpt-image-1"
+    
+    if not prompt:
+        return jsonify({"error": "Prompt is required"}), 400
+
+    try:
+        if not openai_client:
+            return jsonify({"error": "OpenAI client not initialized"}), 500
+
+        response = openai_client.images.generate(
+            model=model,
+            prompt=prompt,
+            size="1024x1024",
+            quality="low",
+            n=1,
+        )
+
+        item = response.data[0]
+        b64 = getattr(item, "b64_json", None)
+        image_url = f"data:image/png;base64,{b64}"
+        
+        return jsonify({
+            "image_url": image_url,
+            "prompt": prompt,
+            "model": model
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": f"OpenAI Image API error: {str(e)}"}), 500
     
 # TASKS API
 @app.route("/tasks", methods=["GET"])
@@ -255,6 +344,57 @@ def submit_personality_test():
         }
     }), 200
 
+@app.route("/submit-post-study-questionnaire", methods=["POST"])
+def submit_post_study_questionnaire():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Missing JSON body"}), 400
+
+    participant_id = data.get("participant_id")
+    responses = data.get("responses", {})
+
+    if not participant_id:
+        return jsonify({"error": "participant_id is required"}), 400
+
+    # Prepare the payload for Supabase with the new simplified questionnaire structure
+    questionnaire_payload = {
+        "participant_id": participant_id,
+        "submitted_at": datetime.utcnow().isoformat(),
+        # Updated questionnaire fields
+        "ai_responses_helpful": responses.get("ai_responses_helpful"),
+        "satisfied_response_quality": responses.get("satisfied_response_quality"),
+        "responses_matched_intent": responses.get("responses_matched_intent"),
+        "trust_ai_accuracy": responses.get("trust_ai_accuracy"),
+        "would_use_future": responses.get("would_use_future"),
+        "ai_importance_increased": responses.get("ai_importance_increased")
+    }
+
+    # Insert into Supabase
+    supabase_endpoint = f"{SUPABASE_URL}/rest/v1/post_study_questionnaire"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+    }
+
+    response = requests.post(supabase_endpoint, headers=headers, json=[questionnaire_payload])
+
+    if response.status_code >= 400:
+        return jsonify({
+            "error": "Supabase insert failed",
+            "details": response.json()
+        }), response.status_code
+
+    inserted_record = response.json()[0]
+
+    return jsonify({
+        "message": "Post-study questionnaire submitted successfully",
+        "questionnaire_id": inserted_record["id"],
+        "participant_id": inserted_record["participant_id"],
+        "submitted_at": inserted_record["submitted_at"]
+    }), 200
+
 @app.route("/store-interaction", methods=["POST"])
 def store_interaction():
     data = request.get_json()
@@ -316,3 +456,5 @@ def store_interaction():
 
     return jsonify({"message": "Interaction and messages stored successfully"}), 200
 
+if __name__ == "__main__":
+    app.run(debug=True)
