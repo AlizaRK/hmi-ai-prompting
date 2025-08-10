@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
 import { AiOutlineInfoCircle } from "react-icons/ai";
 
-
 const RegistrationForm = ({ onRegistrationComplete }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [tasks, setTasks] = useState([]);
   const [formData, setFormData] = useState({
     fullName: '',
     password: '',
@@ -19,8 +19,28 @@ const RegistrationForm = ({ onRegistrationComplete }) => {
     frequency_usage: '',
     english: '',
     usage: [],
-    consent: false
+    consent: false,
+    familiarity: {}
   });
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await axios.get("https://hmi-ai-prompting.onrender.com/tasks");
+        setTasks(res.data || []);
+      } catch (err) {
+        console.error("Error fetching tasks:", err);
+      }
+    };
+    fetchTasks();
+  }, []);
+
+  const handleFamiliarityChange = (taskId, value) => {
+    setFormData(prev => ({
+      ...prev,
+      familiarity: { ...prev.familiarity, [taskId]: value }
+    }));
+  };
 
   const handleSubmit = async (e) => {
     if (formData.consent) {
@@ -39,6 +59,7 @@ const RegistrationForm = ({ onRegistrationComplete }) => {
         english_fluency: formData.english,
         ai_usage: formData.usage,
         consent: formData.consent,
+        familiarity: formData.familiarity,
       };
       try {
         const res = await axios.post('https://hmi-ai-prompting.onrender.com/register', mappedData);
@@ -482,9 +503,12 @@ const RegistrationForm = ({ onRegistrationComplete }) => {
             >
               <option value="">Select...</option>
               <option value="native">Native</option>
-              <option value="fluent">Fluent</option>
-              <option value="intermediate">Intermediate</option>
-              <option value="beginner">Beginner</option>
+              <option value="fluent-c2">Fluent - Proficient (C2)</option>
+              <option value="fluent-c1">Fluent - Advanced (C1)</option>
+              <option value="intermediate-b2">Upper Intermediate (B2)</option>
+              <option value="intermediate-b1">Intermediate (B1)</option>
+              <option value="beginner-a2">Beginner (A2)</option>
+              <option value="beginner-a1">Beginner (A1)</option>
             </select>
           </div>
 
@@ -515,6 +539,41 @@ const RegistrationForm = ({ onRegistrationComplete }) => {
               placeholder="Select..."
             />
           </div>
+
+          {tasks.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Are you familiar with the following tasks?
+              </label>
+              <div className="space-y-3">
+                {tasks.map(task => (
+                  <div key={task.id} className="border p-3 rounded">
+                    <p className="text-gray-800">{task.title}</p>
+                    <div className="flex gap-4 mt-1">
+                      <label>
+                        <input
+                          type="radio"
+                          name={`task-${task.id}`}
+                          value="yes"
+                          checked={formData.familiarity[task.id] === true}
+                          onChange={() => handleFamiliarityChange(task.id, true)}
+                        /> Yes
+                      </label>
+                      <label>
+                        <input
+                          type="radio"
+                          name={`task-${task.id}`}
+                          value="no"
+                          checked={formData.familiarity[task.id] === false}
+                          onChange={() => handleFamiliarityChange(task.id, false)}
+                        /> No
+                      </label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="flex items-start space-x-3 pt-4">
             <input
