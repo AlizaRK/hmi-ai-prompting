@@ -23,12 +23,12 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     return stored ? JSON.parse(stored) : [];
   });
 
-  // Check if PuterJS is ready
+  // Check if PuterJS is ready (only needed for Claude now)
   useEffect(() => {
     const checkPuterReady = () => {
       if (window.puter) {
         setPuterReady(true);
-        console.log('PuterJS is ready!');
+        console.log('PuterJS is ready for Claude!');
       } else {
         setTimeout(checkPuterReady, 100);
       }
@@ -58,29 +58,32 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     fetchTasks();
   }, []);
 
-  // Updated AI options - only implemented models
+  // Updated AI options
   const aiOptions = ['GPT-4o', 'Claude Sonnet 4'];
 
-  // AI configuration mapping - only implemented models
+  // AI configuration mapping
   const getAIConfig = (aiName) => {
     switch (aiName) {
       case 'GPT-4o':
         return {
-          puterModel: 'gpt-4o',
+          provider: 'openai',
+          model: 'gpt-4o',
           supportsImages: true,
-          requiresPuter: true
+          requiresPuter: false // Using backend API now
         };
       case 'Claude Sonnet 4':
         return {
-          puterModel: 'claude-sonnet-4-20250514', // Using the model string from your system message
-          supportsImages: false, // Claude Sonnet 4 doesn't support image generation
+          provider: 'puter',
+          model: 'claude-sonnet-4-20250514',
+          supportsImages: false,
           requiresPuter: true
         };
       default:
         return {
-          puterModel: 'gpt-4o',
+          provider: 'openai',
+          model: 'gpt-4o',
           supportsImages: true,
-          requiresPuter: true
+          requiresPuter: false
         };
     }
   };
@@ -105,38 +108,68 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     }
   }, [chats, selectedChat]);
 
-  const callPuterAI = async (messages, aiModel) => {
+  // OpenAI API calls through backend
+  const callOpenAI = async (messages, messageType) => {
+    try {
+      console.log('Calling OpenAI through backend:', { messages, messageType });
+
+      if (messageType === 'image') {
+        // For image generation, use the latest user message as prompt
+        const lastUserMessage = messages.filter(msg => msg.role === 'user').pop();
+        const prompt = buildImagePromptWithContext(lastUserMessage.content, selectedChat.messages);
+
+        const response = await axios.post('https://api.hmi-ai-prompting.shop/openai-image', {
+          prompt: prompt,
+          model: 'dall-e-3'
+        });
+
+        return {
+          content: response.data.image_url,
+          type: 'image'
+        };
+      } else {
+        // For text chat
+        const response = await axios.post('https://api.hmi-ai-prompting.shop/openai-chat', {
+          messages: messages,
+          model: 'gpt-4o'
+        });
+
+        return {
+          content: response.data.content,
+          type: 'text'
+        };
+      }
+    } catch (error) {
+      console.error('OpenAI backend call failed:', error);
+      throw new Error(error.response?.data?.error || error.message);
+    }
+  };
+
+  // Claude API call through PuterJS (unchanged)
+  const callPuterAI = async (messages) => {
     if (!window.puter || !puterReady) {
       throw new Error('PuterJS is not ready yet');
     }
 
     try {
-      // If it's a string (old format), convert to array
-      const messageArray = typeof messages === 'string'
-        ? [{ role: 'user', content: messages }]
-        : messages;
+      console.log('Calling Claude through PuterJS:', messages);
 
-      console.log(`Calling Puter AI with model: ${aiModel}`, messageArray);
-
-      // Pass through any options you need, e.g. model, temperature, max_tokens
-      const response = await window.puter.ai.chat(messageArray, {
-        model: aiModel,
+      const response = await window.puter.ai.chat(messages, {
+        model: 'claude-sonnet-4-20250514',
         temperature: 0.7,
         max_tokens: 1000
       });
 
-      console.log(`${selectedAI} response:`, response);
+      console.log('Claude response:', response);
 
-      // Handle different response formats from different AI models
+      // Handle different response formats from Claude
       if (response.message !== undefined) {
-        // Claude-style: response.message may be a string or an object
         if (typeof response.message === 'string') {
           return response.message;
         }
         if (typeof response.message.content === 'string') {
           return response.message.content;
         }
-        // Handle array of content blocks (Claude format)
         if (Array.isArray(response.message.content)) {
           return response.message.content
             .filter(block => block.type === 'text')
@@ -145,22 +178,19 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
         }
       }
 
-      // GPT-style: response.content is the string
       if (typeof response.content === 'string') {
         return response.content;
       }
 
-      // Handle choices array format (OpenAI format)
       if (response.choices && Array.isArray(response.choices) && response.choices[0]) {
         if (response.choices[0].message && response.choices[0].message.content) {
           return response.choices[0].message.content;
         }
       }
 
-      // Fallback: stringify the whole object
       return String(response);
     } catch (error) {
-      console.error(`PuterJS AI call failed for ${selectedAI}:`, error);
+      console.error('PuterJS AI call failed for Claude:', error);
       throw error;
     }
   };
@@ -177,13 +207,13 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     // Look for previous image requests and descriptions
     const previousImageRequests = conversationHistory
       .filter(msg => msg.type === 'image' && msg.sender === 'user')
-      .slice(-3) // Get last 3 image requests for context
+      .slice(-3)
       .map(msg => msg.content);
 
     // Look for relevant text context (style preferences, themes, etc.)
     const textContext = conversationHistory
       .filter(msg => msg.type === 'text' && msg.sender === 'user')
-      .slice(-2) // Get last 2 text messages for context
+      .slice(-2)
       .map(msg => msg.content)
       .join(' ');
 
@@ -204,45 +234,6 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     }
 
     return enhancedPrompt;
-  };
-
-  const callPuterImageGeneration = async (prompt, conversationHistory = []) => {
-    if (!window.puter || !puterReady) {
-      throw new Error('PuterJS is not ready yet');
-    }
-
-    try {
-      // Build contextual prompt
-      const contextualPrompt = buildImagePromptWithContext(prompt, conversationHistory);
-      console.log('Enhanced image prompt with context:', contextualPrompt);
-
-      const imageElement = await window.puter.ai.txt2img(contextualPrompt);
-      console.log('Generated Image Element:', imageElement);
-
-      // Handle different possible return types from PuterJS
-      if (imageElement) {
-        // If it's an image element with src
-        if (imageElement.src) {
-          return imageElement.src;
-        }
-        // If it's directly a URL string
-        if (typeof imageElement === 'string' &&
-          (imageElement.startsWith('data:') ||
-            imageElement.startsWith('blob:') ||
-            imageElement.startsWith('http'))) {
-          return imageElement;
-        }
-        // If it's an image element object
-        if (imageElement.tagName === 'IMG' && imageElement.src) {
-          return imageElement.src;
-        }
-      }
-
-      throw new Error('Image generation failed or returned invalid format');
-    } catch (error) {
-      console.error('PuterJS image generation failed:', error);
-      throw error;
-    }
   };
 
   const sendMessage = async (content) => {
@@ -278,72 +269,77 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
 
     try {
       let aiResponseContent = '';
+      let responseType = 'text';
 
-      if (aiConfig.requiresPuter && puterReady) {
+      if (aiConfig.provider === 'openai') {
+        // Handle OpenAI through backend
         if (messageType === 'image' && aiConfig.supportsImages) {
-          // Generate image using PuterJS DALL-E 3 with conversation context (GPT-4o only)
-          const imageUrl = await callPuterImageGeneration(content, selectedChat.messages);
-          aiResponse = {
-            id: Date.now() + 1,
-            content: imageUrl,
-            sender: 'ai',
-            timestamp: new Date().toISOString(),
-            model: selectedAI,
-            type: 'image'
-          };
-          aiResponseContent = imageUrl; // For interaction logging
-        } else if (messageType === 'image' && !aiConfig.supportsImages) {
-          // Handle image request for AI that doesn't support images
-          aiResponseContent = `I'm ${selectedAI}, and I don't support image generation. However, I can help you describe what kind of image you're looking for or discuss image-related topics. What would you like to know about images or visual content?`;
-          aiResponse = {
-            id: Date.now() + 1,
-            content: aiResponseContent,
-            sender: 'ai',
-            timestamp: new Date().toISOString(),
-            model: selectedAI,
-            type: 'text'
-          };
-        } else {
           // Build conversation history for context
           const conversationHistory = selectedChat.messages.map(msg => ({
             role: msg.sender === 'user' ? 'user' : 'assistant',
             content: msg.content
           }));
 
-          // Add current message
           conversationHistory.push({
             role: 'user',
             content: content
           });
 
-          aiResponseContent = await callPuterAI(conversationHistory, aiConfig.puterModel);
-          aiResponse = {
-            id: Date.now() + 1,
-            content: aiResponseContent,
-            sender: 'ai',
-            timestamp: new Date().toISOString(),
-            model: selectedAI,
-            type: 'text'
-          };
-        }
-      } else {
-        // Fallback for when PuterJS is not ready or available
-        const responseContent = messageType === 'image'
-          ? aiConfig.supportsImages
-            ? 'https://via.placeholder.com/512x512/4F46E5/FFFFFF?text=AI+Generated+Image+Placeholder+(Context-Aware)'
-            : `I'm ${selectedAI}, and I don't support image generation. However, I can help you with text-based tasks.`
-          : `This is a simulated response from ${selectedAI}. In a real implementation, this would connect to your chosen AI API with full conversation context.`;
+          const result = await callOpenAI(conversationHistory, 'image');
+          aiResponseContent = result.content;
+          responseType = result.type;
+        } else if (messageType === 'image' && !aiConfig.supportsImages) {
+          // Handle image request for AI that doesn't support images
+          aiResponseContent = `I'm ${selectedAI}, and I don't support image generation. However, I can help you describe what kind of image you're looking for or discuss image-related topics.`;
+          responseType = 'text';
+        } else {
+          // Text chat with OpenAI
+          const conversationHistory = selectedChat.messages.map(msg => ({
+            role: msg.sender === 'user' ? 'user' : 'assistant',
+            content: msg.content
+          }));
 
-        aiResponse = {
-          id: Date.now() + 1,
-          content: responseContent,
-          sender: 'ai',
-          timestamp: new Date().toISOString(),
-          model: selectedAI,
-          type: messageType === 'image' && aiConfig.supportsImages ? 'image' : 'text'
-        };
-        aiResponseContent = responseContent;
+          conversationHistory.push({
+            role: 'user',
+            content: content
+          });
+
+          const result = await callOpenAI(conversationHistory, 'text');
+          aiResponseContent = result.content;
+          responseType = result.type;
+        }
+      } else if (aiConfig.provider === 'puter') {
+        // Handle Claude through PuterJS
+        if (messageType === 'image') {
+          aiResponseContent = `I'm ${selectedAI}, and I don't support image generation. However, I can help you with text-based tasks and discussions.`;
+          responseType = 'text';
+        } else if (puterReady) {
+          // Build conversation history for context
+          const conversationHistory = selectedChat.messages.map(msg => ({
+            role: msg.sender === 'user' ? 'user' : 'assistant',
+            content: msg.content
+          }));
+
+          conversationHistory.push({
+            role: 'user',
+            content: content
+          });
+
+          aiResponseContent = await callPuterAI(conversationHistory);
+          responseType = 'text';
+        } else {
+          throw new Error('PuterJS is not ready yet');
+        }
       }
+
+      aiResponse = {
+        id: Date.now() + 1,
+        content: aiResponseContent,
+        sender: 'ai',
+        timestamp: new Date().toISOString(),
+        model: selectedAI,
+        type: responseType
+      };
 
       setChats(prevChats =>
         prevChats.map(chat =>
@@ -364,7 +360,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
         participant_id: storedUser.participant_id,
         task_id: selectedChat.id,
         ai_tool: selectedAI,
-        message_type: messageType, // Add message type to interaction log
+        message_type: messageType,
         messages: [
           {
             sender: 'user',
@@ -427,7 +423,6 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     if (!selectedChat || !selectedChat.id || submittedTasks.includes(selectedChat.id)) return;
 
     try {
-      // Optional: Send submission info to server
       await axios.post('https://api.hmi-ai-prompting.shop/submit-task', {
         participant_id: storedUser.participant_id,
         task_id: selectedChat.id,
@@ -486,23 +481,29 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
   const getAIStatus = () => {
     const aiConfig = getAIConfig(selectedAI);
     
-    if (!aiConfig.requiresPuter) {
-      return { color: 'blue', text: `Using simulated ${selectedAI} responses` };
+    if (aiConfig.provider === 'openai') {
+      if (messageType === 'image' && aiConfig.supportsImages) {
+        return { color: 'green', text: `Ready for context-aware image generation with ${selectedAI} (DALL-E 3)` };
+      } else if (messageType === 'image' && !aiConfig.supportsImages) {
+        return { color: 'orange', text: `${selectedAI} doesn't support image generation` };
+      } else {
+        return { color: 'green', text: `Ready for ${selectedAI} text chat via OpenAI API` };
+      }
     }
     
-    if (!puterReady) {
-      return { color: 'yellow', text: 'Loading PuterJS...' };
+    if (aiConfig.provider === 'puter') {
+      if (!puterReady) {
+        return { color: 'yellow', text: 'Loading PuterJS for Claude...' };
+      }
+      
+      if (messageType === 'image') {
+        return { color: 'orange', text: `${selectedAI} doesn't support image generation` };
+      }
+      
+      return { color: 'green', text: `Ready for ${selectedAI} text chat via PuterJS` };
     }
     
-    if (messageType === 'image' && !aiConfig.supportsImages) {
-      return { color: 'orange', text: `${selectedAI} doesn't support image generation` };
-    }
-    
-    if (messageType === 'image' && aiConfig.supportsImages) {
-      return { color: 'green', text: `Ready for context-aware image generation with ${selectedAI}` };
-    }
-    
-    return { color: 'green', text: `Ready for ${selectedAI} text chat` };
+    return { color: 'blue', text: `Using ${selectedAI}` };
   };
 
   const aiStatus = getAIStatus();
@@ -526,13 +527,17 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
           <div className="text-sm text-gray-600">
             Welcome, {user?.fullName}. Please perform all the tasks listed below.
           </div>
-          {/* PuterJS Status Indicator */}
-          <div className="mt-2 text-xs">
+          {/* Status Indicators */}
+          <div className="mt-2 space-y-1 text-xs">
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              🟢 GPT-4o + DALL-E 3 Ready (OpenAI API)
+            </span>
+            <br />
             <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${puterReady
               ? 'bg-green-100 text-green-800'
               : 'bg-yellow-100 text-yellow-800'
               }`}>
-              {puterReady ? '🟢 PuterJS Ready (GPT-4o + DALL-E 3, Claude Sonnet 4)' : '🟡 Loading PuterJS...'}
+              {puterReady ? '🟢 Claude Sonnet 4 Ready (PuterJS)' : '🟡 Loading Claude (PuterJS)...'}
             </span>
           </div>
         </div>
@@ -562,7 +567,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
         </div>        
       </div>
 
-      {/* Task Description Panel - Fixed positioning */}
+      {/* Task Description Panel */}
       {isDescriptionVisible && selectedChat && (
         <TaskDescriptionPanel
           description={selectedChat.description}
@@ -593,7 +598,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                   <p className="text-sm text-gray-600 mt-1">{selectedChat.task}</p>
                 )}
               </div>
-              {/* Fixed Show Description Button */}
+              {/* Show Description Button */}
               {selectedChat && (
                 <div>
                   <button
@@ -615,14 +620,17 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                 className="flex items-center space-x-2 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
               >
                 <span className="text-sm font-medium">{selectedAI}</span>
-                {aiConfig.requiresPuter && (
+                {aiConfig.provider === 'openai' && (
+                  <span className="w-2 h-2 rounded-full bg-green-500" />
+                )}
+                {aiConfig.provider === 'puter' && (
                   <span className={`w-2 h-2 rounded-full ${puterReady ? 'bg-green-500' : 'bg-yellow-500'}`} />
                 )}
                 <ChevronDown size={16} />
               </button>
 
               {isAIDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                   {aiOptions.map((ai) => {
                     const config = getAIConfig(ai);
                     return (
@@ -638,11 +646,15 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                         <div className="flex items-center justify-between">
                           <div className="flex flex-col">
                             <span>{ai}</span>
-                            {!config.supportsImages && (
-                              <span className="text-xs text-gray-500">Text only</span>
-                            )}
+                            <span className="text-xs text-gray-500">
+                              {config.provider === 'openai' ? 'OpenAI API' : 'PuterJS'}
+                              {!config.supportsImages ? ' - Text only' : ' - Text & Images'}
+                            </span>
                           </div>
-                          {config.requiresPuter && (
+                          {config.provider === 'openai' && (
+                            <span className="w-2 h-2 rounded-full bg-green-500" />
+                          )}
+                          {config.provider === 'puter' && (
                             <span className={`w-2 h-2 rounded-full ${puterReady ? 'bg-green-500' : 'bg-yellow-500'}`} />
                           )}
                         </div>
@@ -744,7 +756,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                     <span>
                       {aiConfig.supportsImages ? 'Context-Aware Image Generation' : 'Image mode (not supported)'}
                     </span>
-                    {selectedAI === 'GPT-4o' && puterReady && (
+                    {selectedAI === 'GPT-4o' && (
                       <span className="text-xs bg-white bg-opacity-20 px-1 rounded">DALL-E 3</span>
                     )}
                   </div>
@@ -758,14 +770,14 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={
                     messageType === 'image'
-                      ? aiConfig.supportsImages && puterReady
+                      ? aiConfig.supportsImages
                         ? "Describe the image you want to generate (context from conversation will be included)..."
                         : `${selectedAI} doesn't support image generation. Try switching to GPT-4o for images.`
-                      : aiConfig.requiresPuter && !puterReady
+                      : aiConfig.provider === 'puter' && !puterReady
                         ? 'Waiting for PuterJS to load...'
                         : `Type your message to ${selectedAI}...`
                   }
-                  disabled={isLoading || (aiConfig.requiresPuter && !puterReady) || (messageType === 'image' && !aiConfig.supportsImages)}
+                  disabled={isLoading || (aiConfig.provider === 'puter' && !puterReady) || (messageType === 'image' && !aiConfig.supportsImages)}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter' && !isLoading) {
@@ -775,7 +787,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                 />
                 <button
                   type="button"
-                  disabled={!message.trim() || isLoading || (aiConfig.requiresPuter && !puterReady) || (messageType === 'image' && !aiConfig.supportsImages)}
+                  disabled={!message.trim() || isLoading || (aiConfig.provider === 'puter' && !puterReady) || (messageType === 'image' && !aiConfig.supportsImages)}
                   onClick={handleSendMessage}
                   className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
                 >
@@ -810,11 +822,12 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
               <MessageSquare size={64} className="mx-auto mb-4 text-gray-300" />
               <h3 className="text-xl font-medium mb-2">Welcome to the Study</h3>
               <p>Select a task from the sidebar to begin</p>
-              <p className="mt-2 text-sm">
-                {puterReady
-                  ? '✅ Multi-AI support ready via PuterJS (GPT-4o + DALL-E 3, Claude Sonnet 4)'
-                  : '⏳ Loading PuterJS...'}
-              </p>
+              <div className="mt-4 space-y-2 text-sm">
+                <p className="text-green-600">✅ GPT-4o + DALL-E 3 ready via OpenAI API</p>
+                <p className={puterReady ? 'text-green-600' : 'text-yellow-600'}>
+                  {puterReady ? '✅ Claude Sonnet 4 ready via PuterJS' : '⏳ Loading Claude via PuterJS...'}
+                </p>
+              </div>
             </div>
           </div>
         )}
@@ -822,7 +835,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
         {/* Task Submit Button */}
         <div className="border-t border-gray-200 p-4 pt-2">
           {submittedTasks.includes(selectedChat?.id) ? (
-            <div className="text-green-600 text-sm">✅ You have already submitted this task. {submittedTasks.find(task => task.id === selectedChat?.id)?.timestamp}</div>
+            <div className="text-green-600 text-sm">✅ You have already submitted this task.</div>
           ) : (
             <button
               onClick={handleSubmitTask}
