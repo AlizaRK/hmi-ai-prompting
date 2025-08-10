@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/hmi-ai-prompting/static/css/main.f8ec1760.css",
-    "main.js": "/hmi-ai-prompting/static/js/main.de777838.js",
+    "main.css": "/hmi-ai-prompting/static/css/main.8926bc1d.css",
+    "main.js": "/hmi-ai-prompting/static/js/main.37c6a67f.js",
     "static/js/453.670e15c7.chunk.js": "/hmi-ai-prompting/static/js/453.670e15c7.chunk.js",
     "index.html": "/hmi-ai-prompting/index.html",
-    "main.f8ec1760.css.map": "/hmi-ai-prompting/static/css/main.f8ec1760.css.map",
-    "main.de777838.js.map": "/hmi-ai-prompting/static/js/main.de777838.js.map",
+    "main.8926bc1d.css.map": "/hmi-ai-prompting/static/css/main.8926bc1d.css.map",
+    "main.37c6a67f.js.map": "/hmi-ai-prompting/static/js/main.37c6a67f.js.map",
     "453.670e15c7.chunk.js.map": "/hmi-ai-prompting/static/js/453.670e15c7.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f8ec1760.css",
-    "static/js/main.de777838.js"
+    "static/css/main.8926bc1d.css",
+    "static/js/main.37c6a67f.js"
   ]
 }
