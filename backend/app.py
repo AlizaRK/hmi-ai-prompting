@@ -27,15 +27,6 @@ if OPENAI_API_KEY:
     except Exception as e:
         print(f"Warning: Failed to initialize OpenAI client: {e}")
 
-# Add a global OPTIONS handler for all routes
-@app.before_request
-def handle_preflight():
-    if request.method == "OPTIONS":
-        response = jsonify()
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        response.headers.add('Access-Control-Allow-Headers', "*")
-        response.headers.add('Access-Control-Allow-Methods', "*")
-        return response
 
 @app.route("/participants", methods=["GET"])
 def get_participants():
@@ -144,12 +135,8 @@ def login():
     }), 200
 
 # OpenAI Chat endpoint
-@app.route("/openai-chat", methods=["POST", "OPTIONS"])
+@app.route("/openai-chat", methods=["POST"])
 def openai_chat():
-    if request.method == "OPTIONS":
-        # This is handled by the before_request handler above
-        return "", 204
-        
     data = request.get_json()
     if not data:
         return jsonify({"error": "Missing JSON body"}), 400
@@ -189,11 +176,8 @@ def openai_chat():
         return jsonify({"error": f"OpenAI API error: {str(e)}"}), 500
 
 # OpenAI Image Generation endpoint
-@app.route("/openai-image", methods=["POST", "OPTIONS"])
+@app.route("/openai-image", methods=["POST"])
 def openai_image():
-    if request.method == "OPTIONS":
-        return "", 204
-        
     data = request.get_json()
     if not data:
         return jsonify({"error": "Missing JSON body"}), 400
@@ -230,11 +214,8 @@ def openai_image():
         return jsonify({"error": f"OpenAI Image API error: {str(e)}"}), 500
     
 # TASKS API
-@app.route("/tasks", methods=["GET", "OPTIONS"])
+@app.route("/tasks", methods=["GET"])
 def get_tasks():
-    if request.method == "OPTIONS":
-        return "", 204
-        
     supabase_endpoint = f"{SUPABASE_URL}/rest/v1/task"
     headers = {
         "apikey": SUPABASE_KEY,
@@ -251,11 +232,8 @@ def get_tasks():
 
     return jsonify(response.json()), 200 
 
-@app.route("/submit-task", methods=["POST", "OPTIONS"])
+@app.route("/submit-task", methods=["POST"])
 def submit_task():
-    if request.method == "OPTIONS":
-        return "", 204
-        
     data = request.get_json()
 
     participant_id = data.get("participant_id")
@@ -296,11 +274,8 @@ def submit_task():
 
     return jsonify({"message": "Task submitted", "ended_at": datetime.utcnow().isoformat()}), 200
 
-@app.route("/submit-personality-test", methods=["POST", "OPTIONS"])
+@app.route("/submit-personality-test", methods=["POST"])
 def submit_personality_test():
-    if request.method == "OPTIONS":
-        return "", 204
-        
     data = request.get_json()
     if not data:
         return jsonify({"error": "Missing JSON body"}), 400
@@ -369,11 +344,8 @@ def submit_personality_test():
         }
     }), 200
 
-@app.route("/submit-post-study-questionnaire", methods=["POST", "OPTIONS"])
+@app.route("/submit-post-study-questionnaire", methods=["POST"])
 def submit_post_study_questionnaire():
-    if request.method == "OPTIONS":
-        return "", 204
-        
     data = request.get_json()
     if not data:
         return jsonify({"error": "Missing JSON body"}), 400
@@ -384,51 +356,17 @@ def submit_post_study_questionnaire():
     if not participant_id:
         return jsonify({"error": "participant_id is required"}), 400
 
-    # Prepare the payload for Supabase
+    # Prepare the payload for Supabase with the new simplified questionnaire structure
     questionnaire_payload = {
         "participant_id": participant_id,
         "submitted_at": datetime.utcnow().isoformat(),
-        # Overall Experience
-        "overall_satisfaction": responses.get("overall_satisfaction"),
-        "study_clear": responses.get("study_clear"),
-        "time_sufficient": responses.get("time_sufficient"),
-        
-        # GPT-4o Experience
-        "gpt4o_text_quality": responses.get("gpt4o_text_quality"),
-        "gpt4o_image_quality": responses.get("gpt4o_image_quality"),
-        "gpt4o_helpfulness": responses.get("gpt4o_helpfulness"),
-        "gpt4o_understanding": responses.get("gpt4o_understanding"),
-        "gpt4o_feedback": responses.get("gpt4o_feedback"),
-        
-        # Claude Experience
-        "claude_text_quality": responses.get("claude_text_quality"),
-        "claude_helpfulness": responses.get("claude_helpfulness"),
-        "claude_understanding": responses.get("claude_understanding"),
-        "claude_feedback": responses.get("claude_feedback"),
-        
-        # AI Comparison
-        "preferred_ai_text": responses.get("preferred_ai_text"),
-        "preferred_ai_overall": responses.get("preferred_ai_overall"),
-        "ai_differences": responses.get("ai_differences"),
-        "switching_frequency": responses.get("switching_frequency"),
-        
-        # Task-Specific Feedback
-        "image_limit_impact": responses.get("image_limit_impact"),
-        "image_limit_sufficient": responses.get("image_limit_sufficient"),
-        "most_challenging_task": responses.get("most_challenging_task"),
-        "task_variety": responses.get("task_variety"),
-        
-        # Interface & Usability
-        "interface_ease": responses.get("interface_ease"),
-        "ai_switching": responses.get("ai_switching"),
-        "task_navigation": responses.get("task_navigation"),
-        "interface_improvements": responses.get("interface_improvements"),
-        
-        # Additional Feedback
-        "recommend_study": responses.get("recommend_study"),
-        "future_ai_use": responses.get("future_ai_use"),
-        "general_comments": responses.get("general_comments"),
-        "technical_issues": responses.get("technical_issues")
+        # Updated questionnaire fields
+        "ai_responses_helpful": responses.get("ai_responses_helpful"),
+        "satisfied_response_quality": responses.get("satisfied_response_quality"),
+        "responses_matched_intent": responses.get("responses_matched_intent"),
+        "trust_ai_accuracy": responses.get("trust_ai_accuracy"),
+        "would_use_future": responses.get("would_use_future"),
+        "ai_importance_increased": responses.get("ai_importance_increased")
     }
 
     # Insert into Supabase
@@ -457,11 +395,8 @@ def submit_post_study_questionnaire():
         "submitted_at": inserted_record["submitted_at"]
     }), 200
 
-@app.route("/store-interaction", methods=["POST", "OPTIONS"])
+@app.route("/store-interaction", methods=["POST"])
 def store_interaction():
-    if request.method == "OPTIONS":
-        return "", 204
-        
     data = request.get_json()
     if not data:
         return jsonify({"error": "Missing JSON body"}), 400
