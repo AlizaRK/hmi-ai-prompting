@@ -23,6 +23,12 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     return stored ? JSON.parse(stored) : [];
   });
 
+  // Track image generation count per task (only for image tasks)
+  const [imageGenerationCounts, setImageGenerationCounts] = useState(() => {
+    const stored = localStorage.getItem('imageGenerationCounts');
+    return stored ? JSON.parse(stored) : {};
+  });
+
   // Check if PuterJS is ready (only needed for Claude now)
   useEffect(() => {
     const checkPuterReady = () => {
@@ -102,11 +108,39 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     }
     // Set message type based on task type when chat changes
     if (selectedChat && selectedChat.task_type === 'image') {
-      setMessageType('image');
-    } else if (selectedChat && selectedChat.task_type !== 'image') {
-      setMessageType('text');
+      setMessageType('image'); // Force image mode for image tasks
+    } else {
+      setMessageType('text'); // Default to text for non-image tasks
     }
   }, [chats, selectedChat]);
+
+  // Helper function to check if current task is image-based
+  const isImageTask = () => {
+    return selectedChat && selectedChat.task_type === 'image';
+  };
+
+  // Helper function to get current image count for selected task (only for image tasks)
+  const getCurrentImageCount = () => {
+    if (!selectedChat || !isImageTask()) return 0;
+    return imageGenerationCounts[selectedChat.id] || 0;
+  };
+
+  // Helper function to check if image limit is reached (only for image tasks)
+  const isImageLimitReached = () => {
+    if (!isImageTask()) return false;
+    return getCurrentImageCount() >= 5;
+  };
+
+  // Helper function to increment image count (only for image tasks)
+  const incrementImageCount = (taskId) => {
+    if (!isImageTask()) return;
+    const newCounts = {
+      ...imageGenerationCounts,
+      [taskId]: (imageGenerationCounts[taskId] || 0) + 1
+    };
+    setImageGenerationCounts(newCounts);
+    localStorage.setItem('imageGenerationCounts', JSON.stringify(newCounts));
+  };
 
   // OpenAI API calls through backend
   const callOpenAI = async (messages, messageType) => {
@@ -114,6 +148,11 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
       console.log('Calling OpenAI through backend:', { messages, messageType });
 
       if (messageType === 'image') {
+        // Check image limit before making the call (only for image tasks)
+        if (isImageTask() && isImageLimitReached()) {
+          throw new Error('You have reached the limit of 5 images per task');
+        }
+
         // For image generation, use the latest user message as prompt
         const lastUserMessage = messages.filter(msg => msg.role === 'user').pop();
         const prompt = buildImagePromptWithContext(lastUserMessage.content, selectedChat.messages);
@@ -122,6 +161,11 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
           prompt: prompt,
           model: 'dall-e-3'
         });
+
+        // Increment image count after successful generation (only for image tasks)
+        if (isImageTask()) {
+          incrementImageCount(selectedChat.id);
+        }
 
         return {
           content: response.data.image_url,
@@ -239,12 +283,43 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
   const sendMessage = async (content) => {
     if (!content.trim() || !selectedChat) return;
 
+    // For image tasks, always use image message type
+    const actualMessageType = isImageTask() ? 'image' : messageType;
+
+    // Check image limit before sending message for image generation (only for image tasks)
+    if (actualMessageType === 'image' && isImageTask() && isImageLimitReached()) {
+      // Add error message about limit
+      const limitErrorMessage = {
+        id: Date.now(),
+        content: `You have reached the limit of 5 images per task. You cannot generate more images for this task.`,
+        sender: 'ai',
+        timestamp: new Date().toISOString(),
+        model: selectedAI,
+        isError: true,
+        type: 'text'
+      };
+
+      setChats(prevChats =>
+        prevChats.map(chat =>
+          chat.id === selectedChat.id
+            ? { ...chat, messages: [...chat.messages, limitErrorMessage] }
+            : chat
+        )
+      );
+
+      setSelectedChat(prev => ({
+        ...prev,
+        messages: [...prev.messages, limitErrorMessage]
+      }));
+      return;
+    }
+
     const newMessage = {
       id: Date.now(),
       content,
       sender: 'user',
       timestamp: new Date().toISOString(),
-      type: messageType
+      type: actualMessageType
     };
 
     // Add user message immediately
@@ -273,7 +348,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
 
       if (aiConfig.provider === 'openai') {
         // Handle OpenAI through backend
-        if (messageType === 'image' && aiConfig.supportsImages) {
+        if (actualMessageType === 'image' && aiConfig.supportsImages) {
           // Build conversation history for context
           const conversationHistory = selectedChat.messages.map(msg => ({
             role: msg.sender === 'user' ? 'user' : 'assistant',
@@ -288,7 +363,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
           const result = await callOpenAI(conversationHistory, 'image');
           aiResponseContent = result.content;
           responseType = result.type;
-        } else if (messageType === 'image' && !aiConfig.supportsImages) {
+        } else if (actualMessageType === 'image' && !aiConfig.supportsImages) {
           // Handle image request for AI that doesn't support images
           aiResponseContent = `I'm ${selectedAI}, and I don't support image generation. However, I can help you describe what kind of image you're looking for or discuss image-related topics.`;
           responseType = 'text';
@@ -310,7 +385,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
         }
       } else if (aiConfig.provider === 'puter') {
         // Handle Claude through PuterJS
-        if (messageType === 'image') {
+        if (actualMessageType === 'image') {
           aiResponseContent = `I'm ${selectedAI}, and I don't support image generation. However, I can help you with text-based tasks and discussions.`;
           responseType = 'text';
         } else if (puterReady) {
@@ -360,13 +435,13 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
         participant_id: storedUser.participant_id,
         task_id: selectedChat.id,
         ai_tool: selectedAI,
-        message_type: messageType,
+        message_type: actualMessageType,
         messages: [
           {
             sender: 'user',
             content,
             timestamp: newMessage.timestamp,
-            type: messageType
+            type: actualMessageType
           },
           {
             sender: 'ai',
@@ -482,9 +557,13 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     const aiConfig = getAIConfig(selectedAI);
     
     if (aiConfig.provider === 'openai') {
-      if (messageType === 'image' && aiConfig.supportsImages) {
-        return { color: 'green', text: `Ready for context-aware image generation with ${selectedAI} (DALL-E 3)` };
-      } else if (messageType === 'image' && !aiConfig.supportsImages) {
+      if (isImageTask() && aiConfig.supportsImages) {
+        const imageCount = getCurrentImageCount();
+        if (isImageLimitReached()) {
+          return { color: 'red', text: `Image limit reached (5/5) for this task with ${selectedAI} (DALL-E 3)` };
+        }
+        return { color: 'green', text: `Ready for context-aware image generation with ${selectedAI} (DALL-E 3) - ${imageCount}/5 images used` };
+      } else if (isImageTask() && !aiConfig.supportsImages) {
         return { color: 'orange', text: `${selectedAI} doesn't support image generation` };
       } else {
         return { color: 'green', text: `Ready for ${selectedAI} text chat via OpenAI API` };
@@ -496,7 +575,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
         return { color: 'yellow', text: 'Loading PuterJS for Claude...' };
       }
       
-      if (messageType === 'image') {
+      if (isImageTask()) {
         return { color: 'orange', text: `${selectedAI} doesn't support image generation` };
       }
       
@@ -521,7 +600,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
               onClick={onEndStudy}
               className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm font-medium"
             >
-              End Task
+              End Study
             </button>
           </div>
           <div className="text-sm text-gray-600">
@@ -558,6 +637,12 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                   {chat.messages.length > 0 && (
                     <div className="text-xs text-blue-600 mt-1">
                       {chat.messages.length} messages
+                    </div>
+                  )}
+                  {/* Show image count only for image tasks */}
+                  {chat.task_type === 'image' && (
+                    <div className="text-xs text-purple-600 mt-1">
+                      Images: {imageGenerationCounts[chat.id] || 0}/5
                     </div>
                   )}
                 </div>
@@ -704,7 +789,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                     <div className="flex items-center space-x-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
                       <span className="text-gray-600">
-                        {messageType === 'image'
+                        {isImageTask()
                           ? `${selectedAI} is generating context-aware image...`
                           : `${selectedAI} is thinking...`}
                       </span>
@@ -718,45 +803,26 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
 
             {/* Message Input */}
             <div className="border-t border-gray-200 p-4">
-              {/* Message Type Toggle - Only show if task_type is not 'image' */}
-              {selectedChat?.task_type !== 'image' && (
+              {/* Show current mode for image tasks - no toggle, just display */}
+              {isImageTask() && (
                 <div className="flex items-center space-x-2 mb-3">
                   <span className="text-sm text-gray-600">Mode:</span>
-                  <button
-                    onClick={() => setMessageType('text')}
-                    className={`flex items-center space-x-1 px-3 py-1 rounded-md text-sm transition-colors ${messageType === 'text'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
-                  >
-                    <Type size={14} />
-                    <span>Text</span>
-                  </button>
-                  {aiConfig.supportsImages && (
-                    <button
-                      onClick={() => setMessageType('image')}
-                      className={`flex items-center space-x-1 px-3 py-1 rounded-md text-sm transition-colors ${messageType === 'image'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        }`}
-                    >
-                      <ImageIcon size={14} />
-                      <span>Image</span>
-                    </button>
-                  )}
-                </div>
-              )}
-
-              {/* Show current mode for image tasks */}
-              {selectedChat?.task_type === 'image' && (
-                <div className="flex items-center space-x-2 mb-3">
-                  <span className="text-sm text-gray-600">Mode:</span>
-                  <div className={`flex items-center space-x-1 px-3 py-1 rounded-md text-sm ${aiConfig.supportsImages ? 'bg-blue-600 text-white' : 'bg-gray-400 text-white'}`}>
+                  <div className={`flex items-center space-x-1 px-3 py-1 rounded-md text-sm ${
+                    aiConfig.supportsImages && !isImageLimitReached() 
+                      ? 'bg-blue-600 text-white' 
+                      : isImageLimitReached()
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-400 text-white'
+                    }`}>
                     <ImageIcon size={14} />
                     <span>
-                      {aiConfig.supportsImages ? 'Context-Aware Image Generation' : 'Image mode (not supported)'}
+                      {isImageLimitReached() 
+                        ? 'Image limit reached (5/5)'
+                        : aiConfig.supportsImages 
+                        ? `Image Generation (${getCurrentImageCount()}/5)` 
+                        : 'Image mode (not supported)'}
                     </span>
-                    {selectedAI === 'GPT-4o' && (
+                    {selectedAI === 'GPT-4o' && !isImageLimitReached() && (
                       <span className="text-xs bg-white bg-opacity-20 px-1 rounded">DALL-E 3</span>
                     )}
                   </div>
@@ -769,15 +835,17 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={
-                    messageType === 'image'
-                      ? aiConfig.supportsImages
+                    isImageTask()
+                      ? isImageLimitReached()
+                        ? 'Image limit reached (5/5) - cannot generate more images for this task'
+                        : aiConfig.supportsImages
                         ? "Describe the image you want to generate (context from conversation will be included)..."
                         : `${selectedAI} doesn't support image generation. Try switching to GPT-4o for images.`
                       : aiConfig.provider === 'puter' && !puterReady
                         ? 'Waiting for PuterJS to load...'
                         : `Type your message to ${selectedAI}...`
                   }
-                  disabled={isLoading || (aiConfig.provider === 'puter' && !puterReady) || (messageType === 'image' && !aiConfig.supportsImages)}
+                  disabled={isLoading || (aiConfig.provider === 'puter' && !puterReady) || (isImageTask() && (!aiConfig.supportsImages || isImageLimitReached()))}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter' && !isLoading) {
@@ -787,13 +855,13 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                 />
                 <button
                   type="button"
-                  disabled={!message.trim() || isLoading || (aiConfig.provider === 'puter' && !puterReady) || (messageType === 'image' && !aiConfig.supportsImages)}
+                  disabled={!message.trim() || isLoading || (aiConfig.provider === 'puter' && !puterReady) || (isImageTask() && (!aiConfig.supportsImages || isImageLimitReached()))}
                   onClick={handleSendMessage}
                   className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
                 >
                   {isLoading ? (
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  ) : messageType === 'image' ? (
+                  ) : isImageTask() ? (
                     <ImageIcon size={16} />
                   ) : (
                     <Send size={16} />
@@ -807,11 +875,13 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
                   aiStatus.color === 'green' ? 'text-green-600' :
                   aiStatus.color === 'yellow' ? 'text-yellow-600' :
                   aiStatus.color === 'orange' ? 'text-orange-600' :
+                  aiStatus.color === 'red' ? 'text-red-600' :
                   'text-blue-600'
                 }`}>
                   {aiStatus.color === 'green' ? '✅' : 
                    aiStatus.color === 'yellow' ? '⏳' :
-                   aiStatus.color === 'orange' ? '⚠️' : 'ℹ️'} {aiStatus.text}
+                   aiStatus.color === 'orange' ? '⚠️' : 
+                   aiStatus.color === 'red' ? '🚫' : 'ℹ️'} {aiStatus.text}
                 </span>
               </div>
             </div>
