@@ -8,9 +8,14 @@ from datetime import datetime
 from openai import OpenAI
 
 app = Flask(__name__)
-CORS(app, origins="*", 
+
+# Updated CORS configuration - more specific and explicit
+CORS(app, 
+     origins=["https://alizark.github.io", "http://localhost:3000", "http://localhost:5173"],
      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-     allow_headers=["Content-Type", "Authorization"])
+     allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
+     supports_credentials=False,
+     expose_headers=["Content-Type"])
 
 load_dotenv(override=True)
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -23,7 +28,6 @@ openai_client = None
 if OPENAI_API_KEY:
     try:
         openai_client = OpenAI(api_key=OPENAI_API_KEY)
-        print(OPENAI_API_KEY)
     except Exception as e:
         print(f"Warning: Failed to initialize OpenAI client: {e}")
 
@@ -356,21 +360,20 @@ def submit_post_study_questionnaire():
     if not participant_id:
         return jsonify({"error": "participant_id is required"}), 400
 
-    # Prepare the payload for Supabase with the new simplified questionnaire structure
+    # Map the frontend response keys to the correct database column names
     questionnaire_payload = {
         "participant_id": participant_id,
-        "submitted_at": datetime.utcnow().isoformat(),
-        # Updated questionnaire fields
-        "ai_responses_helpful": responses.get("ai_responses_helpful"),
-        "satisfied_response_quality": responses.get("satisfied_response_quality"),
-        "responses_matched_intent": responses.get("responses_matched_intent"),
-        "trust_ai_accuracy": responses.get("trust_ai_accuracy"),
-        "would_use_future": responses.get("would_use_future"),
-        "ai_importance_increased": responses.get("ai_importance_increased")
+        # Map frontend keys to database columns
+        "helpfulness": responses.get("ai_responses_helpful"),
+        "satisfaction": responses.get("satisfied_response_quality"), 
+        "intent_alignment": responses.get("responses_matched_intent"),
+        "trust": responses.get("trust_ai_accuracy"),
+        "future_use": responses.get("would_use_future"),
+        "ai_importance": responses.get("ai_importance_increased")
     }
 
-    # Insert into Supabase
-    supabase_endpoint = f"{SUPABASE_URL}/rest/v1/post_study_questionnaire"
+    # Insert into Supabase - use the correct table name
+    supabase_endpoint = f"{SUPABASE_URL}/rest/v1/post_study_questions"
     headers = {
         "apikey": SUPABASE_KEY,
         "Authorization": f"Bearer {SUPABASE_KEY}",
@@ -392,7 +395,14 @@ def submit_post_study_questionnaire():
         "message": "Post-study questionnaire submitted successfully",
         "questionnaire_id": inserted_record["id"],
         "participant_id": inserted_record["participant_id"],
-        "submitted_at": inserted_record["submitted_at"]
+        "responses": {
+            "helpfulness": inserted_record["helpfulness"],
+            "satisfaction": inserted_record["satisfaction"],
+            "intent_alignment": inserted_record["intent_alignment"],
+            "trust": inserted_record["trust"],
+            "future_use": inserted_record["future_use"],
+            "ai_importance": inserted_record["ai_importance"]
+        }
     }), 200
 
 @app.route("/store-interaction", methods=["POST"])
