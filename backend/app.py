@@ -393,7 +393,6 @@ def submit_post_study_questionnaire():
 
     return jsonify({
         "message": "Post-study questionnaire submitted successfully",
-        "questionnaire_id": inserted_record["id"],
         "participant_id": inserted_record["participant_id"],
         "responses": {
             "helpfulness": inserted_record["helpfulness"],
