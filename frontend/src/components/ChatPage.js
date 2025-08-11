@@ -109,6 +109,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     // Set message type based on task type when chat changes
     if (selectedChat && selectedChat.task_type === 'image') {
       setMessageType('image'); // Force image mode for image tasks
+      setSelectedAI('GPT-4o'); // Auto-switch to GPT-4o for image tasks
     } else {
       setMessageType('text'); // Default to text for non-image tasks
     }
