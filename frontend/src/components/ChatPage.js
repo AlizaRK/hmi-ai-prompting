@@ -64,8 +64,8 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     fetchTasks();
   }, []);
 
-  // Updated AI options
-  const aiOptions = ['GPT-4o', 'Claude Sonnet 4'];
+  // Updated AI options - dynamic based on task type
+  const aiOptions = isImageTask() ? ['GPT-4o'] : ['GPT-4o', 'Claude Sonnet 4'];
 
   // AI configuration mapping
   const getAIConfig = (aiName) => {
