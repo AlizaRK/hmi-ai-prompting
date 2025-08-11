@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/hmi-ai-prompting/static/css/main.192cd9f3.css",
-    "main.js": "/hmi-ai-prompting/static/js/main.208b7dbe.js",
+    "main.css": "/hmi-ai-prompting/static/css/main.2f347dbf.css",
+    "main.js": "/hmi-ai-prompting/static/js/main.f72e37b5.js",
     "static/js/453.670e15c7.chunk.js": "/hmi-ai-prompting/static/js/453.670e15c7.chunk.js",
     "index.html": "/hmi-ai-prompting/index.html",
-    "main.192cd9f3.css.map": "/hmi-ai-prompting/static/css/main.192cd9f3.css.map",
-    "main.208b7dbe.js.map": "/hmi-ai-prompting/static/js/main.208b7dbe.js.map",
+    "main.2f347dbf.css.map": "/hmi-ai-prompting/static/css/main.2f347dbf.css.map",
+    "main.f72e37b5.js.map": "/hmi-ai-prompting/static/js/main.f72e37b5.js.map",
     "453.670e15c7.chunk.js.map": "/hmi-ai-prompting/static/js/453.670e15c7.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.192cd9f3.css",
-    "static/js/main.208b7dbe.js"
+    "static/css/main.2f347dbf.css",
+    "static/js/main.f72e37b5.js"
   ]
 }
