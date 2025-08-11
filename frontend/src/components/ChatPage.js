@@ -591,7 +591,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
   return (
     <div className="flex h-screen bg-gray-100 relative select-none">
       {/* Sidebar */}
-      <div className={`bg-white border-r border-gray-200 transition-all duration-300 ${isSidebarOpen ? 'w-80' : 'w-0'
+      <div className={`bg-white border-r border-gray-200 transition-all duration-300 flex flex-col ${isSidebarOpen ? 'w-80' : 'w-0'
         } overflow-hidden relative`}>
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center justify-between mb-4">
@@ -621,7 +621,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
           </div>
         </div>
 
-        <div className="overflow-y-auto h-full pb-20">
+        <div className="overflow-y-auto flex-1 pb-4">
           {chats.map((chat) => (
             <div
               key={chat.id}
