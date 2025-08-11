@@ -101,10 +101,13 @@ const RegistrationForm = ({ onRegistrationComplete }) => {
               <label className="block text-sm font-medium text-gray-700">
                 Email Address
               </label>
-              <div className="relative group cursor-pointer">
-                <AiOutlineInfoCircle className="text-blue-500" size={16} />
-                <div className="absolute left-1/2 -translate-x-1/2 mt-1 w-72 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+              {/* Tooltip wrapper - fixed positioning */}
+              <div className="relative group">
+                <AiOutlineInfoCircle className="text-blue-500 cursor-pointer" size={16} />
+                <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-72 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
                   If you are enrolled in Schwind: HMI - SoSe 2025, please enter your University email address to get 1 CR.
+                  {/* Tooltip arrow */}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-black"></div>
                 </div>
               </div>
             </div>
@@ -114,7 +117,9 @@ const RegistrationForm = ({ onRegistrationComplete }) => {
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={formData.email}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, email: e.target.value }))
+              }
             />
           </div>
 
