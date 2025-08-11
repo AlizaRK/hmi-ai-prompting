@@ -64,8 +64,10 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
     fetchTasks();
   }, []);
 
-  // Updated AI options - dynamic based on task type
-  const aiOptions = isImageTask() ? ['GPT-4o'] : ['GPT-4o', 'Claude Sonnet 4'];
+  // Updated AI options
+  const getAIOptions = () => {
+    return isImageTask() ? ['GPT-4o'] : ['GPT-4o', 'Claude Sonnet 4'];
+  };
 
   // AI configuration mapping
   const getAIConfig = (aiName) => {
@@ -716,7 +718,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
 
               {isAIDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                  {aiOptions.map((ai) => {
+                  {getAIOptions().map((ai) => {
                     const config = getAIConfig(ai);
                     return (
                       <button
