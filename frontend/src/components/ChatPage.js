@@ -25,7 +25,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
 
   // Track image generation count per task (only for image tasks)
   const [imageGenerationCounts, setImageGenerationCounts] = useState(() => {
-    const stored = localStorage.getItem('imageGenerationCounts');
+    const stored = sessionStorage.getItem('imageGenerationCounts');
     return stored ? JSON.parse(stored) : {};
   });
 
@@ -139,7 +139,7 @@ const ChatPage = ({ user, onLogout, onEndStudy }) => {
       [taskId]: (imageGenerationCounts[taskId] || 0) + 1
     };
     setImageGenerationCounts(newCounts);
-    localStorage.setItem('imageGenerationCounts', JSON.stringify(newCounts));
+    sessionStorage.setItem('imageGenerationCounts', JSON.stringify(newCounts));
   };
 
   // OpenAI API calls through backend
