@@ -5,6 +5,12 @@ const PostStudyQuestionnaire = ({ user, onComplete }) => {
   const [responses, setResponses] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Get user data from localStorage as primary source if it has participant_id
+  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+  
+  // FIXED: Prioritize storedUser if it has participant_id, otherwise fall back to user prop
+  const currentUser = (storedUser && storedUser.participant_id) ? storedUser : user;
+
   const questions = [
     {
       id: 'ai_responses_helpful',
@@ -55,18 +61,45 @@ const PostStudyQuestionnaire = ({ user, onComplete }) => {
       return;
     }
 
+    // Debug logging
+    console.log('User prop:', user);
+    console.log('Stored user:', storedUser);
+    console.log('Current user (fixed logic):', currentUser);
+    console.log('Participant ID:', currentUser?.participant_id);
+    console.log('Responses:', responses);
+
+    // Check if we have a participant_id
+    if (!currentUser?.participant_id) {
+      alert('Error: User information is missing. Please try refreshing the page and logging in again.');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      await axios.post('https://api.hmi-ai-prompting.shop/submit-post-study-questionnaire', {
-        participant_id: user.participant_id,
+      const payload = {
+        participant_id: currentUser.participant_id,
         responses: responses
-      });
+      };
+
+      console.log('Sending payload:', payload);
+
+      const response = await axios.post('https://api.hmi-ai-prompting.shop/submit-post-study-questionnaire', payload);
       
+      console.log('Server response:', response.data);
       alert('Thank you! Your responses have been submitted successfully.');
       onComplete();
     } catch (error) {
       console.error('Failed to submit questionnaire:', error);
-      alert('There was an error submitting your responses. Please try again.');
+      
+      // More detailed error reporting
+      if (error.response) {
+        console.error('Error response:', error.response.data);
+        alert(`Submission failed: ${error.response.data?.error || 'Unknown server error'}`);
+      } else if (error.request) {
+        alert('Network error: Unable to reach the server. Please check your connection.');
+      } else {
+        alert('Error: ' + error.message);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -78,6 +111,11 @@ const PostStudyQuestionnaire = ({ user, onComplete }) => {
     return Math.round((answeredQuestions / totalQuestions) * 100);
   };
 
+  // Helper to get display name with fallback
+  const getDisplayName = () => {
+    return currentUser?.fullName || currentUser?.name || currentUser?.email || 'Participant';
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto">
@@ -85,9 +123,17 @@ const PostStudyQuestionnaire = ({ user, onComplete }) => {
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Post-Study Questionnaire</h1>
             <p className="text-gray-600 mb-4">
-              Thank you for participating in our AI assistant study, {user?.fullName}! 
+              Thank you for participating in our AI assistant study, {getDisplayName()}! 
               Please share your experience and feedback.
             </p>
+            
+            {/* Debug info - remove this in production */}
+            <div className="text-xs text-gray-400 mb-4">
+              Debug: Participant ID: {currentUser?.participant_id || 'Not found'}
+              <br />
+              Source: {(storedUser && storedUser.participant_id) ? 'localStorage' : 'user prop'}
+            </div>
+            
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
                 className="bg-blue-600 h-2 rounded-full transition-all duration-300"
