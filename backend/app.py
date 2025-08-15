@@ -1,11 +1,15 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from dotenv import load_dotenv
 import os
+import base64
+from werkzeug.utils import secure_filename
+from datetime import datetime
 import requests
 import bcrypt
 from flask_cors import CORS
 from datetime import datetime
 from openai import OpenAI
+import uuid
 
 app = Flask(__name__)
 
@@ -31,6 +35,12 @@ if OPENAI_API_KEY:
     except Exception as e:
         print(f"Warning: Failed to initialize OpenAI client: {e}")
 
+
+UPLOAD_FOLDER = '/home/ubuntu/static/images'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+# Ensure upload directory exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route("/participants", methods=["GET"])
 def get_participants():
@@ -413,6 +423,7 @@ def store_interaction():
     participant_id = data.get("participant_id")
     task_id = data.get("task_id")
     ai_tool = data.get("ai_tool")
+    message_type = data.get("message_type")
     messages = data.get("messages", [])
 
     if not participant_id or not task_id or not ai_tool or not messages:
@@ -448,7 +459,7 @@ def store_interaction():
         {
             "interaction_id": interaction_id,
             "sender": msg["sender"],
-            "content": msg["content"],
+            "content": save_base64_image(msg["content"]) if message_type == "image" and msg["sender"] == "ai" else msg["content"],
             "created_at": msg.get("timestamp") or datetime.utcnow().isoformat()
         }
         for msg in messages
@@ -464,6 +475,53 @@ def store_interaction():
         return jsonify({"error": "Failed to insert messages", "details": message_resp.json()}), 500
 
     return jsonify({"message": "Interaction and messages stored successfully"}), 200
+
+@app.route('/static/images/<filename>')
+def serve_image(filename):
+    """Serve uploaded images"""
+    try:
+        return send_from_directory(UPLOAD_FOLDER, filename)
+    except Exception as e:
+        return jsonify({"error": "Image not found"}), 404
+
+def save_base64_image(base64_data, filename_prefix="image"):
+    """Save base64 image data to local file and return the file path"""
+    try:
+        # Remove data URL prefix if present (data:image/png;base64,)
+        if base64_data.startswith('data:image'):
+            base64_data = base64_data.split(',')[1]
+        
+        # Clean the base64 string - remove any whitespace/newlines
+        base64_data = base64_data.strip().replace('\n', '').replace('\r', '')
+        
+        # Add padding if necessary
+        # Base64 strings must be divisible by 4, pad with '=' if needed
+        missing_padding = len(base64_data) % 4
+        if missing_padding:
+            base64_data += '=' * (4 - missing_padding)
+        
+        # Decode base64 data
+        image_data = base64.b64decode(base64_data)
+        
+        # Generate unique filename with timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        filename = f"{filename_prefix}_{timestamp}_{uuid.uuid4()}.png"
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        
+        # Save image to file
+        with open(filepath, 'wb') as f:
+            f.write(image_data)
+        
+        # Return relative path for database storage
+        return f"/static/images/{filename}"
+        
+    except Exception as e:
+        print(f"Error saving image: {e}")
+        # Log more details for debugging
+        print(f"Base64 data length: {len(base64_data) if 'base64_data' in locals() else 'N/A'}")
+        print(f"Base64 data preview: {base64_data[:50] if 'base64_data' in locals() and len(base64_data) > 50 else 'N/A'}")
+        return None
+
 
 if __name__ == "__main__":
     app.run(debug=True)
