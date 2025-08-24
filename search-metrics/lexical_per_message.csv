@@ -1,0 +1,485 @@
+participant_id,gender,content,token_count,ttr,pronoun_count,emotion_count
+1,female,"standing on the balcony, overlooking the farms at cameron highlands.. clouds hanging very low, passing through the trees as it rains",21,0.9047619047619048,0,0
+1,female,"cream coloured walls, with hanging plants in some places. a soft cosy bed with yellow covers. room has a bohemian touch. lots of natural light and white net curtains. a study table by the window",35,0.9142857142857143,0,0
+1,female,i do the cleaning my husband does the cooking,9,0.8888888888888888,2,0
+1,female,oh i want him to do it.. doesn't mean he does. ,12,1.0,3,0
+1,female,how should i communicate?,4,1.0,1,0
+1,female,i have gifted my friend almost all kinds of gift. now idk what to gift,15,0.9333333333333333,2,0
+1,female,yes help me make a meal plan,7,1.0,1,0
+1,female,"i eat everything. no allergies. loose weight. no time or very less time. love chicken, spaghetti, live in karachi pakistan. i am not rich",24,0.875,2,1
+1,female,yes help,2,1.0,0,0
+1,female,want to become more productive,5,1.0,0,0
+3,male,Visualize a memory from my recent vacation with friends in Amsterdam we are cycling through the streets having world famous cookies,21,1.0,2,0
+3,male,Help me design my dream room think man cave gaming setup in the a nice corner. Pop culture paraphernalia decorating the room figurines and collectibles and merch. Room should have my dream bed a racing car. Think mancave but with a good skylight for night time,46,0.8043478260869565,3,1
+3,male,"Sharing an apartment with 4 people with a shared hallway, kitchen and bathroom help me come up with segregations for household chores",21,0.9047619047619048,1,0
+3,male,What should I get for my bestfriends birthday gifted them a day pass at a karting track last year. Think huge car and racing nerd.,25,0.96,3,0
+3,male,Help me build a weekly fitness/meal plan I have a snacking habit which I am trying to break. Also go to the gym but inconsistently where I try to hit the stair master and a wide array of muscle exercises.,41,0.8292682926829268,4,0
+3,male,I usually skip breakfast and try to do OMAD so structured meal plans dont work for me necessarily. Snacking is a bigger issue when I am doing work on desk.,30,0.9333333333333333,3,0
+3,male,Heres my daily routine suggest ways to make me productive. Make a bowl of cereal. Take a shower. Spend some time on the phone. Then start checking messages and emails from work. Get ready for classes. After returning home preparing the days meal. Logging in for work. Going to the gym. Late night gaming session. Sleeping. This usually packed schedule does not leave time to learn important tools for my career. S,72,0.8472222222222222,3,0
+13,male,Kassel city enjoy harqulus ,4,1.0,0,1
+3,male,Maybe I can limit gaming time incrementally suggest a short term vs long term plan to slowly move towards this goal also make sure this is sustainable as this free time is important to make the day feel less machine like,41,0.8292682926829268,1,1
+3,male,Explain photosynthesis like I am a 5 year old. ,8,1.0,1,1
+3,male,Make the explanation a more story like whimsical maybe? Something a 5 year old would be engaged in.,17,0.9411764705882353,0,1
+3,male,Make the story shorter young people have shorter time spans these days,12,0.9166666666666666,0,0
+3,male,Can you explain feminism to me,6,1.0,2,0
+3,male,What are the major challenges that feminism faces in terms of arguments for and agaisnt,15,1.0,0,0
+3,male,Can you try to explain things more from a more neutral perspective help me understand the anti feminism perspective more.,20,0.85,2,0
+3,male,Suggests ways to make a friend who has had a recent breakup feel better,14,0.9285714285714286,0,1
+3,male,Help me create a dating profile. I a pop culture nerd. Like to travel. I value a honest career oriented person.,21,0.8571428571428571,3,1
+5,male,My bestfriend has his 25th birthday coming week and would like to give him some gift. Suggest me good gift options,21,0.9523809523809523,3,2
+11,male,"A warm late afternoon on a quiet beach, golden sunlight casting long shadows over soft white sand, gentle waves lapping at the shore, seashells scattered near the waterline, a book resting open on a wooden beach chair, a cool drink with condensation beads on a small table, distant silhouettes of sailboats on the horizon, the air calm and peaceful with a sense of contentment.",64,0.765625,0,0
+12,male,Write an image of person easy a potato,8,1.0,0,0
+3,male,Lets refine this a bit need to make it a but less like a chore to read through quick and attention grabbing. Should leave a good first impression,28,0.8571428571428571,0,2
+3,male,Let's write a fictional story about a romance between criminals. Bonnie and Clyde style less old timey. More in a current satirical version of the US,27,0.9259259259259259,1,0
+5,male,Generate a image from my last vacation where i was on my first trek in germany and had a great experience to see the mountains and cold breeze,28,0.8928571428571429,3,0
+5,male,There were few step trenches and few tree cut around,10,0.9,0,0
+5,male,I was climbing this step road but with a stick in a hand,13,0.9230769230769231,1,0
+5,male,Design a room with one table having laptop and dual screen setup. A small wardrobe and one bed,18,0.8333333333333334,0,0
+5,male,I share a apartment with 3 of my university batchmates and would like to help divide household chores ,17,1.0,2,1
+5,male,The 1st guy has morning shift from Monday to Wednesday 8 to 5,11,0.9090909090909091,0,0
+5,male,The 2nd and the 3rd guy go on shift from mon to fri from 5 to 9pm evening adjust the plan as so that all have got proper assignment and all the 3 are free on weekend,35,0.7714285714285715,0,0
+42,male,a men achived everything in life ,6,1.0,0,0
+5,male,Could you please suggest me a weekly fitness and meal plan for my weight loss as currently i am overweight,20,1.0,4,0
+5,male,As a Masters student i would like to manage my day in such a way that i could study cook and focus on my productivity ,25,0.88,4,1
+5,male,Is it possible for you to alter the table to include gym as well,14,0.9285714285714286,1,0
+5,male,Help me teach a 5 year old how photosythesis works,9,1.0,1,0
+5,male,make the explanation more short and in fun to understand with some visualization,13,1.0,0,0
+5,male,What is feminism,3,1.0,0,0
+6,male,"Wtf, first image was ok but just don't make the boat overcrowded ",13,1.0,0,0
+11,male,"A modern cozy bedroom with a queen-sized bed covered in soft neutral linens, warm ambient lighting from wall sconces and a bedside lamp, a large window with sheer curtains letting in natural daylight, a small reading nook with a plush armchair and a round wooden side table, indoor plants adding greenery, minimalist wooden shelves with neatly arranged books and decor, light oak flooring, and a soft textured rug creating a calm and inviting atmosphere.",75,0.76,0,0
+5,male,how has it changed over time,6,1.0,0,0
+5,male,What are the major arguments for and against it today,10,1.0,0,0
+5,male,Summarize the chat,3,1.0,0,0
+5,male,Write a fictional story about the boy having wings and could fly a side of plane and reach home,19,0.8947368421052632,0,0
+5,male,Creata a dating profile bio for me who is introvert and like to have a nice evening coffee dates. Who likes to play football and also playstation. Hangout for late night movie and some club party,36,0.8333333333333334,1,1
+5,male,Yesterday my friend had a break with his girlfriend which was lasted for 2 years and currently is going through difficult time and feeling low. How could i support him ,29,0.9655172413793104,3,0
+8,female,"The Task Description says: 	1.	First, ask the AI to explain it simply. 	2.	Then, ask the AI to turn that explanation into a story or game a 5-year-old would enjoy. 	3.	Ask the AI to make it shorter, more fun, or more visual.  If you tell me the actual topic you need to teach, I can follow those steps for you and create a kid-friendly, fun version. What’s the topic you need explained?",74,0.6891891891891891,6,1
+6,male,"We went to rheinfall Switzerland, we ride a boat which was full of mostly arabic and south asians. The boat started and everyone was very excited. It completed its 30 min route in the rheinfall. ",34,0.8235294117647058,2,0
+6,male,It is too crowded,4,1.0,0,0
+11,male,"A shared apartment kitchen table with two roommates sitting across from each other, a colorful weekly chore chart on the table showing tasks like cooking, cleaning, laundry, and taking out the trash, sticky notes with reminders, a laptop open to a shared calendar, coffee mugs in front of each person, friendly expressions as they discuss and agree on who will do what, the setting warm and organized to reflect cooperation and fairness.",72,0.8055555555555556,1,1
+10,male,There were beautiful mountains and animals and trees and ice,10,0.8,0,1
+11,male,"A cozy boutique gift shop with shelves filled with candles, books, and handmade jewelry, soft golden lighting creating a warm atmosphere, a person thoughtfully holding a wrapped gift box with a ribbon, a handwritten birthday card beside it, small potted plants and decorative trinkets on display, the mood warm and personal, reflecting care and friendship.",55,0.7818181818181819,0,0
+11,male,"A clean and organized digital planner open on a tablet screen, displaying a colorful weekly schedule with workout sessions like yoga, strength training, and running, alongside balanced meal plans with fresh fruits, vegetables, lean proteins, and healthy snacks, a water bottle and dumbbells placed on the table, a bowl of salad next to the planner, natural daylight streaming in from a nearby window, creating a sense of motivation and well-being.",71,0.7887323943661971,0,1
+11,male,"A bright home workspace with a tidy desk, a laptop open to a to-do list app, a neatly arranged calendar showing a well-structured daily routine, sticky notes with short motivational quotes, a cup of coffee beside a closed notebook, a phone face down to minimize distractions, sunlight streaming through a window, and an overall feeling of focus, organization, and steady progress.",63,0.7777777777777778,0,0
+11,male,"A colorful children’s illustration of a happy green plant with a smiling sun shining above, arrows showing sunlight going into the leaves, water drops traveling from the roots up the stem, and tiny bubbles of oxygen floating into the air, with simple labels like Sun, Water, and Air, designed in a fun and playful style for a 5-year-old to understand.",62,0.7580645161290323,0,2
+11,male,"A cozy study setting with a stack of books on feminism, a laptop open to an educational article, a steaming mug of tea beside a notepad filled with handwritten thoughts, posters of historical women’s rights leaders on the wall, soft light from a desk lamp, and an atmosphere of reflection and learning as someone reads and develops their own perspective.",61,0.7868852459016393,1,0
+11,male,"A creative workspace with a laptop open to a writing app, the screen showing a few paragraphs of a fictional story in progress, a steaming cup of coffee on the side, scattered notes with character sketches and plot ideas, a cozy lamp casting warm light, and an AI chatbot window open, suggesting imaginative twists and vivid descriptions, creating an atmosphere of inspiration and collaboration.",64,0.765625,0,0
+11,male,"A smartphone screen showing a dating app profile page, with a smiling profile photo at the top, a short and engaging bio written in a friendly tone, icons for hobbies like travel, cooking, reading, and hiking, a cozy café background in the main photo, and a sense of warmth and authenticity that reflects personality and interests.",56,0.75,0,1
+11,male,"Two friends sitting together on a couch, one offering a comforting hug while the other holds a warm cup of tea, soft blankets and tissues nearby, a gentle glow from a floor lamp creating a safe and calming atmosphere, quiet rain visible through the window, symbolizing care, empathy, and emotional support.",51,0.8431372549019608,0,0
+13,male,Enjoy Luxemburg view. Nature and getting memories.,7,1.0,0,1
+13,male,Heidelberg kassel,2,1.0,0,0
+14,male,it was beautifull vallys and animals and greenery,8,0.875,0,0
+13,male,Wesbadan view,2,1.0,0,0
+14,male,a room with chair and a beautifull bed with sofa,10,0.8,0,0
+13,male,Pinta beach ,2,1.0,0,0
+16,male,I want an image of a dream house,8,1.0,1,0
+16,male,I was in istanbul for my holidays at blue mosque describe me with an image ,15,1.0,3,0
+16,male,I was behind the mosque,5,1.0,1,0
+16,male,My family was with me (my wife),7,0.8571428571428571,3,0
+17,female,i was in mountains with my friend it was cool windy weather there is lots of cafes and restaurants there was lots of shopping center and very beautiful weather.,29,0.7586206896551724,2,1
+17,female,i was in wisbaden with my best friend with stylish outfit and it was summer days and we were eating icecream. there is beautiful garden with colorful flowers,28,0.8571428571428571,3,1
+17,female,i want cosy room with lots of flower plants and big window near the sea shore and lots of book,20,0.85,1,0
+17,female,i want to buy colorfull princess dress for my best friend,11,1.0,2,0
+17,female,i want image of dress,5,1.0,1,0
+17,female,make pink long princess dress with diamonds and lots of flowers,11,1.0,0,0
+17,female,cosy apartment view,3,1.0,0,0
+21,male,"Plants make their own food in a process called photosynthesis, which is like cooking inside their leaves. 🌱 They take sunlight from the sun, water from the ground through their roots, and air from around them, and mix it all together to make sugar, which is their food. The sunlight works like an oven to help the recipe, and when the plant is done, it also gives out fresh oxygen for us to breathe. ☀️💧🍃",73,0.7123287671232876,7,2
+17,female,salad picture,2,1.0,0,0
+17,female,"i want salad with tomatos onion, green beans and olive oil",11,1.0,1,0
+18,male,"I sat with my laptop in nature, the air fresh and clean. Birds sang soffly, and everything felt peaceful.",19,0.9473684210526315,2,0
+18,male,"Sitting by a quiet lake, I watched ripples dance across the water as the sun dipped low. My thoughts felt as calm as the surface.",25,0.84,2,0
+18,male,"woke up in a wooden cabin surrounded by tall trees. The morning mist curled through the branches, and the only sound was birdsong",23,0.9130434782608695,0,0
+18,male,"We gathered around a rustic wooden table under string lights, sharing stories and laughter over a homemade meal. The night air was cool, the food warm, and the company perfect.",30,0.8666666666666667,1,0
+18,male,"After dinner, we sat in a circle on the grass, the stars above and laughter all around. Each truth revealed a secret, each dare sparked wild fun-memories we'd never forget.",32,0.875,2,0
+21,male,We are two roomates. Both are studying in same course and also working in same job. So most of the routine is same. We have divided our chores equally almost. Sometimes we compromise also. But mostly it is divided. Suppose I do  do the laundary and he does the iron . He cooks snd I do the dishes. In this way everything is divided ,63,0.6825396825396826,8,0
+21,male,Visualize it,2,1.0,0,0
+21,male,"Feminism means believing that women and men should be treated equally and have the same chances in life. It’s not about making women better than men, but about removing unfair rules or traditions that stop people from doing things just because of their gender. When everyone is treated fairly, it makes life better for everyone.",56,0.8214285714285714,1,2
+24,male,"And there were more people also in the background, we tried eating holland special famous potato fries there and we also took a swing hanging from height, it was just amazing experience",32,0.875,2,0
+21,male,I'm not good at buying gifts for friends. But if I have to buy one for friend than I will buy him a puzzle books where puzzles also help in sharpening mind snd a good playable game.,38,0.8421052631578947,4,2
+21,male,"As I'm 65kg and 5'9, so as per the studies I need almost 70g protein daily. Carbs snd unsaturated fats mainly and other nutrients in  minor amount. I'll do my breakfast sith some high protein diet. I like to drink milk, so I'll frink high protein milk snd I'll add some fruits with it. In the linch I'll add some bread and meat. In the dinner some light meal to end the day.",77,0.6363636363636364,8,1
+21,male,Ok got it,3,1.0,0,0
+21,male,"Eat healthy, do workout, make peace with yourself ",8,1.0,0,0
+24,male,"Hey! I just moved into a new room and I’m looking for some design inspiration. I’d love to include a cozy reading nook, modern furniture, plants, a desk setup. Can you help me visualize it by creating an image based on that?",44,0.9090909090909091,5,1
+21,male,"The Boy and the Moon   Sami was a boy who loved the moon. Every night, he sat on his roof and talked to it. One night he said, “I wish I could hold you.” The moon replied, “Okay, but bring me back before sunrise.”  The moon came down, glowing in Sami’s hands. He walked through the fields, lighting the way for fireflies and helping travelers see in the dark.  When the sun started to rise, Sami put the moon back in the sky. From that day on, the moon always shone brighter for Sami, like it was smiling at its friend",102,0.6666666666666666,7,1
+21,male,"Collector of sunsets, bad puns, and good coffee. Can cook pasta that might make you fall in love (or call for takeout if it fails). Looking for someone who laughs loudly, loves small adventures, and doesn’t mind stargazing at 2 AM. Bonus points if you can beat me at Uno — but I warn you, I play to win.",58,0.8620689655172413,6,3
+21,male,"I know it hurts right now, but a breakup doesn’t define your worth or your future. ❤️ Sometimes people leave not because you weren’t enough, but because the chapter with them was meant to end so you could grow stronger and meet the right person who will value you fully. You gave your best, and that’s something to be proud of. Take this time to focus on yourself, heal, and do things that make you happy — because better days, better love, and brighter smiles are ahead of you. 🌟",90,0.7666666666666667,11,4
+22,male,"I know it hurts right now, but a breakup doesn’t define your worth or your future. ❤️ Sometimes people leave not because you weren’t enough, but because the chapter with them was meant to end so you could grow stronger and meet the right person who will value you fully. You gave your best, and that’s something to be proud of. Take this time to focus on yourself, heal, and do things that make you happy — because better days, better love, and brighter smiles are ahead of you. 🌟",90,0.7666666666666667,11,4
+23,male,Last weekend i went to Switzerland with my friends to visit Reinfall and it was really good to see such places i really enjoyed with my friends ,27,0.7407407407407407,4,1
+23,male,I visit this weekend Rauthhaus with my friends ,8,1.0,2,0
+23,male,Iam preparation for my exam which is around next month ,10,1.0,1,0
+23,male,Iam doing part time job as kitchen helper,8,1.0,0,0
+23,male,I like to visit beautiful cities in Germany ,8,1.0,1,2
+24,male,"I want to generate a image with my 3 besties, we were spending our holidays in netherlands.",16,1.0,4,0
+24,male,"But, I Am a Boy And I Was There With My Boys",12,0.9166666666666666,3,0
+25,female,My last vacation was with my friends .we went to France and spend a whole day with lot of fun loving activities ,22,0.9090909090909091,3,0
+25,female,I buy some good stuff .and eat good food ,9,0.8888888888888888,1,2
+24,male,I live with a few roommates and we’re trying to figure out a fair way to split up the chores. Here’s a bit about everyone’s schedule and preferences. Can you help us come up with a plan? I’ll let you know what works and what doesn’t so we can tweak it.,56,0.75,7,0
+25,female,We take lot of pictures and listen songs ,8,1.0,1,0
+24,male,"We are total 4, two of them are doing odd jobs and ma nd one more are doing working student, thay are usually booked on weekends and we are free. 2 Prefer To Sleep Early And 2 Wants To Sleep Late.",38,0.7368421052631579,3,0
+25,female,I saw there lots of tourist came for spending there  holidays ,11,0.9090909090909091,1,0
+24,male,"I’m looking for a gift for my friend. She’s super thoughtful and creative, always the one planning fun get-togethers. She’s into books, plants, and photography, and recently started a new job in graphic design. She’s been a bit stressed with the transition, so I want to get her something meaningful or comforting. Any ideas?",59,0.7966101694915254,7,0
+25,female,After spending whole day .then we went back to home .and we take your train ,15,0.9333333333333333,3,0
+24,male,"I want to get healthier but need something realistic. Let’s say my goal is to build some strength and have more energy. I can spare maybe 30 minutes a day, and I’m not super strict with food, but I prefer balanced meals over extreme diets. Can you give me a simple fitness and meal plan to start with?",59,0.8135593220338984,7,0
+24,male," I work during the day, try to squeeze in time for friends or hobbies in the evening, and I’m usually on my phone or watching something before bed. I want to get better at managing my time, maybe be more productive or build better habits. Can you help me with a realistic plan that fits my lifestyle?",58,0.8103448275862069,8,2
+24,male,"Explain this in a simple way. Then turn it into a fun story or game for a 5-year-old. Can you make it even shorter, more fun, or more visual?",30,0.8,1,0
+24,male,god helps those who helps themselves,6,0.8333333333333334,0,0
+28,female,my friends birthday is coming next week so I was planning to gift him something which can help him in daily routine and comes under my budget. Help me deciding a gift for him,34,0.8529411764705882,7,0
+28,female,"hey gpt!! Recently, I started gym as I have gained weight. I don't have any personal fitness trainer in gym so I want you to help me by planning a workout  routine for me and also plan my meals accordingly.",41,0.8536585365853658,8,0
+24,male,"Let’s talk about feminism — what it means, how it’s changed, and the arguments for and against it today. Explain it simply and fairly. I’ll ask questions or push back if I’m unsure. Afterward, I’ll share my thoughts and see if my view has changed.",49,0.7346938775510204,5,0
+24,male,"dont you think, males are more prior then females",9,1.0,1,0
+24,male,"Here’s a fun story idea: A lonely robot finds an old music player and learns to express feelings through songs. Can you help me continue the story? I might ask you to change the tone, add twists, or develop the characters more",43,0.8604651162790697,4,0
+24,male,"I’m a realistic and respectful person who really cares about relationships. Can you help me write a dating bio? I’ll give you feedback to make it funnier, bolder, or more subtle whatever fits me best. Let’s refine it a couple of times",45,0.8666666666666667,6,0
+24,male,Add more about real value,5,1.0,0,0
+24,male,again,1,1.0,0,0
+24,male,"My close friend just went through a tough breakup and is feeling really down. He is ususally calm, and the relationship meant a lot to him. Right now, he is coping by that breakup. Can you help me figure out what to say or do to support them in a meaningful way?",52,0.8269230769230769,7,0
+32,male,for working i want to put chair and table,9,1.0,1,0
+32,male,Also put wardrobe for clothes,5,1.0,0,0
+32,male,show me the full view with the last image you created,11,0.9090909090909091,2,0
+27,male,"i was in luxembourg where i saw a bridge with 2 facilities, at one level there was a path for vehicle and just below it, there was a path for people",30,0.7333333333333333,2,0
+27,male,There was a form of grill outside of the bridge or people for better safty,15,0.9333333333333333,0,1
+27,male,these two bridge are at same place. just one above another. people bridge is under the bridge of behicle,19,0.8947368421052632,0,0
+27,male,those bridges are in same directions,6,1.0,0,0
+28,female,"Here’s a simple description:  ---  The sun is slowly going down behind the tall mountains. The sky is full of colors — orange, pink, and purple. The mountain tops shine with golden light, while the lower slopes are already in shadow. A cool wind moves through the trees, and the air feels fresh. Birds are flying back to their nests, and the whole valley is calm and quiet. ",67,0.7910447761194029,1,0
+29,female,"as standing on a golden sandy beach in Goa at sunset, the waves gently touching my feet. The sky was painted in shades of orange, pink, and purple, and the reflection danced across the calm water. Palm trees swayed softly in the warm breeze, and I could hear the soothing sound of the ocean mixed with distant laughter from people enjoying the evening. I felt peaceful, free, and deeply connected to nature.",72,0.8055555555555556,3,0
+28,female,"The sun is slowly going down behind the tall mountains. The sky is full of colors — orange, pink, and purple. The mountain tops shine with golden light, while the lower slopes are already in shadow. A cool wind moves through the trees, and the air feels fresh. Birds are flying back to their nests, and the whole valley is calm and quiet.",62,0.7903225806451613,1,0
+27,male,I would like to design my room with having avengers posters on wall. There might be one study table in the corner and a double bed in another corner. Myroom should be covered with bright color. there should be one section for my cricket kit. as well as i need one section for gym equipment,55,0.7454545454545455,4,1
+27,male,It is not still what am i asking.,8,1.0,1,0
+28,female,"I want you to design a modern and tech-focused apartment, using a sleek color palette of charcoal grey and a vibrant electric blue accent. Choose furniture with clean lines, like a low-profile sectional sofa and a sleek, electric standing desk for your home office. Incorporate smart lighting and hidden LED strips to create a futuristic ambiance. For a touch of nature, a collection of succulents in geometric pots works well. The decor can feature subtle art inspired by technology, like abstract data visualizations. Everything should be organized and have a purpose.",93,0.7956989247311828,3,2
+27,male,"I am living with 5 people in sharing apartment. we usually bring all the groceries together and then split in individually. As well as one person pay rent , electricity and internet bill and we need to split it individually. could you please suggest the fair way to split the household chores",50,0.78,4,0
+32,male,cool now pul small small carboard images next to laptop table wall,12,0.9166666666666666,0,0
+28,female,"The sun is slowly going down behind the tall mountains. The sky is full of colors — orange, pink, and purple. The mountain tops shine with golden light, while the lower slopes are already in shadow. A cool wind moves through the trees, and the air feels fresh. Birds are flying back to their nests, and the whole valley is calm and quiet.",62,0.7903225806451613,1,0
+28,female,"The sun is slowly going down behind the tall mountains. The sky is full of colors — orange, pink, and purple. The mountain tops shine with golden light, while the lower slopes are already in shadow. A cool wind moves through the trees, and the air feels fresh. Birds are flying back to their nests, and the whole valley is calm and quiet.",62,0.7903225806451613,1,0
+28,female,Week 1 You:  Cleaning kitchen  Vacuuming/sweeping  Laundry (if shared)  Roommate:  Washing dishes  Taking out trash/recycling  Cleaning bathroom  Dusting/living area tidy-up,23,0.9565217391304348,1,0
+28,female,"The sun is slowly going down behind the tall mountains. The sky is full of colors — orange, pink, and purple. The mountain tops shine with golden light, while the lower slopes are already in shadow. A cool wind moves through the trees, and the air feels fresh. Birds are flying back to their nests, and the whole valley is calm and quiet.",62,0.7903225806451613,1,0
+28,female,"I want you to design a modern and tech-focused apartment, using a sleek color palette of charcoal grey and a vibrant electric blue accent. Choose furniture with clean lines, like a low-profile sectional sofa and a sleek, electric standing desk for your home office. Incorporate smart lighting and hidden LED strips to create a futuristic ambiance. For a touch of nature, a collection of succulents in geometric pots works well. The decor can feature subtle art inspired by technology, like abstract data visualizations. Everything should be organized and have a purpose.",93,0.7956989247311828,3,2
+28,female,"I am sharing an apartment with a girl. I was planning monthly schedule for cleaning tasks, buying groceries, etc. Help me planning the schedule by dividing the tasks same between us.",31,0.8387096774193549,4,0
+28,female,My friend's birthday is ,5,1.0,1,0
+30,male,"beach,bear, swimming ",3,1.0,0,0
+30,male,beer ,1,1.0,0,0
+30,male,"no bear , beer ",3,1.0,0,0
+31,male,"“A lively Parisian street café in the early morning, wrought-iron tables filled with people sipping coffee, croissants on plates, bicycles leaning against a lamppost, soft golden sunlight filtering through rows of blooming flowers, cobblestone street glistening slightly from a light drizzle, warm and romantic atmosphere.”",46,0.9347826086956522,0,0
+31,male,"“Charming Italian piazza at sunset, outdoor café with red-checkered tablecloths, waiters carrying trays of espresso and pastries, locals chatting animatedly, accordion player in the corner, pastel buildings with open shutters, hanging string lights casting a warm glow.”",38,0.9736842105263158,0,0
+31,male,"“Vintage European café scene in Bruges, Belgium, tourists and locals mingling under large colorful umbrellas, a canal with swans in the background, fresh flowers on every table, aroma of fresh waffles drifting from a nearby stand, gentle afternoon sunlight.”",39,0.9230769230769231,0,0
+31,male,"“Bustling street café in Barcelona, tables spilling onto a wide pedestrian avenue, mosaic-tiled benches nearby, street performers entertaining passersby, churros and coffee being served, palm trees swaying under a bright blue sky, warm Mediterranean vibe.”",36,0.9444444444444444,0,0
+31,male,"“Cozy Vienna coffeehouse terrace in autumn, people wearing scarves and chatting over tall glasses of melange, warm pastries displayed on silver trays, fallen golden leaves scattered on cobblestones, horse-drawn carriage passing in the background, elegant historic buildings framing the street.”",41,0.926829268292683,0,0
+31,male,"A calm minimalist bedroom with soft neutral tones, low platform bed with crisp white bedding, natural wood furniture, a single bonsai tree on a sleek desk, large window with sheer curtains letting in soft morning light, subtle Japanese-inspired décor, clean lines and clutter-free space.",47,0.8936170212765957,0,0
+31,male,"Open-plan bedroom with exposed brick walls, black steel-framed windows, reclaimed wood bed frame, Edison bulb pendant lights, leather reading chair in the corner, dark gray rug, abstract art on the walls, warm amber lighting creating a cozy urban vibe.",41,0.9512195121951219,0,0
+31,male,"Bright airy bedroom with white walls, light oak flooring, textured wool blankets in muted tones, hanging plants, small bookshelf with neatly arranged books, large window seat filled with cushions, natural sunlight flooding the space, simple yet inviting décor.",39,0.9487179487179487,0,0
+31,male,"""A bright, modern apartment kitchen with two roommates smiling and organizing a colorful wall-mounted chore chart, each task written on magnetic labels, sunlight streaming through large windows, plants on the windowsill, cozy and cheerful atmosphere, realistic photography, soft natural lighting.""          Ask ChatGPT",43,0.9302325581395349,0,0
+31,male,create a image,3,1.0,0,0
+32,male,i was in the beach in palma de mallorca Sa Rapita beach having sun bath,15,0.8666666666666667,1,0
+32,male,no i am male ,4,1.0,1,0
+32,male,i am a bit skinny and with no beard,9,1.0,1,0
+32,male,lets make the image more real ,6,1.0,0,0
+32,male,and also make a pic in front of Palma Cathedral,10,1.0,0,0
+32,male,ok let make a room design i have 20m2  and i want to design it with side table and chair in the corner and on wall i want to put realmadrid big flag and one bed and carpeted room ,39,0.7435897435897436,3,0
+33,female," The sun is slowly going down behind the tall mountains. The sky is full of colors — orange, pink, and purple. The mountain tops shine with golden light, while the lower slopes are already in shadow. A cool wind moves through the trees, and the air feels fresh. Birds are flying back to their nests, and the whole valley is calm and quiet.",62,0.7903225806451613,1,0
+33,female,"I want to change how my room looks. Please help me design it in a nice and simple way. Tell me where I can put my bed, table, and other things. Give me ideas for wall colors, lights, and decorations. Keep it easy so I can do it myself without spending too much. I want my room to feel comfortable and pretty. Please write it step by step so I can follow it easily.",74,0.6891891891891891,11,0
+33,female,Image generated is not clear. can you generate another one please,11,1.0,1,0
+32,male,i have and apartment and in it we are living 3 boys. i am student and the one boy is a banker and last one is food delivery. so we have a apartment with three beds and one washroom and one kitchen. how can i divide the chores ,47,0.6595744680851063,5,0
+33,female,"I live in an apartment with a girl. We need help to share the work in the house. Please make a list of chores like cleaning, cooking, and washing dishes. Tell us who should do what and when. Make sure it is fair and work is equally divided between us. Write it in a table or simple list so we can understand it. Keep it easy so we can follow it every week without problems",75,0.7333333333333333,6,1
+32,male,so we did our individual grocery and laundry we have  machine so we did it our self ,17,0.7058823529411765,5,0
+32,male,mainly we have kitchen and bathroom duties mainly and living area,11,0.8181818181818182,1,0
+33,female,"My friend is very sad after a breakup. Please tell me how I can make them feel better. Give me simple ideas for what I can say to them. Share some small things I can do to help, like spending time with them or bringing them something nice. Keep it easy so I can remember it. I want to help without saying the wrong thing. Make it sound caring and kind.",71,0.7605633802816901,12,3
+43,male,"Increase the depth and warmth of the colors, making the whole scene feel more romantic and nostalgic, as if captured in a perfect holiday memory.",25,0.88,0,0
+33,female,My best friend's birthday is around the corner and I want to buy a nice gift for him. Please give me ideas for gifts that are special and also can be used in daily routine. Share both cheap and a little expensive options. Write why each gift could be good for my friend. Keep the ideas simple so I can choose easily. I want the gift to feel personal and caring.,72,0.7361111111111112,7,1
+32,male,suggest me some good gift for my friend. he is football and formula 1 fan and he also like gadgets,19,0.8947368421052632,4,2
+32,male,my weight is 62 and i want my week plan for diet and gym i working morning and in evening i have some time to go to gym ,27,0.7407407407407407,5,0
+33,female,I want to eat healthy and exercise every day. Please make a 7-day plan for me. Write what exercise I can do each day and what food I should eat. Make it simple so I can follow it without much stress. I want to lose some weight but still have energy. Please include easy vegetarian meals with protein. Keep it clear so I can understand it at one look,69,0.6956521739130435,7,0
+32,male,when should i cook every day or one day and make a meals for daily,15,0.9333333333333333,1,0
+43,male,"Include more details on the Charles Bridge — add a few historic statues, slightly weathered stone texture, and delicate shadows cast by the setting sun.",24,0.9583333333333334,0,0
+33,female,"I want to do more work every day without wasting time. Please make a simple plan for my day from morning to night. Add time for work, study, exercise, and rest. Give me easy tips to avoid getting lazy. Keep it realistic so I can follow it every day. Write it step by step. I do not want to feel like I wasted time.",64,0.71875,6,1
+33,female,Please explain how plants make their own food in a way a small child can understand. Use very easy words and a short story or example. Make it fun so the child wants to listen. Keep the explanation short but clear. Use things a child sees every day like the sun or water. I want the child to enjoy learning it. Make it sound like a happy story about plants,70,0.7,2,4
+32,male,add meat in the schedule,5,1.0,0,0
+33,female,I want to understand what feminism means. Please explain it to me in simple words. Tell me a little about how it started and why it is important. Share some good and bad things people say about it. Help me understand different opinions about feminism. Keep it easy so I can remember it. I want to know enough to make my own opinion,63,0.7142857142857143,7,2
+33,female,"Please help me write a short story that is not real but fun to read. I want the story to be about a girl who can hear plants talking. Make it sound magical but still easy to understand. Add some nice details to make the story interesting. Keep it short but complete with a beginning, middle, and end. Make the ending sweet and nice. I want it to be easy for anyone to read.",74,0.6621621621621622,3,0
+33,female,"I need help writing a short bio for a dating app. I want it to sound friendly, real, and a little funny. Please make it show that I like traveling, photography, cooking, and hiking. Keep it simple so people understand me quickly. Add a line that makes me sound interesting. Make it positive and warm. I want it to feel honest but still fun.",64,0.71875,6,1
+32,male,"i wakeup at 9-10 and after using 30 minutes phone i go to the washroom for 20 minutes and than start my day by doing couple of hours my online work on laptop and then do some breakfast and then i do work and smoke and hanging out in home and around 5 i am like dead but i prepare my dinner around 19:00 hour  them i go to the gym depends on my mood like 3,4 times in  a week. how should i be more productive?",81,0.6790123456790124,12,2
+32,male,but i think i didn't eat much,8,0.875,2,0
+32,male,what is photosynthesis work?,4,1.0,0,0
+32,male,now i want to tell this to aboy which is 5 years old and converts this is story,17,0.8235294117647058,1,0
+32,male,short it,2,1.0,0,0
+32,male,what is feminism?,3,1.0,0,0
+43,male,"One of my favorite moments from my last holiday was in Prague with my friends. We were standing on the Charles Bridge at sunset, looking at the soft orange light falling on the old buildings and the calm river below. Street musicians were playing gentle music, and the cool breeze made everything feel peaceful. I could see the Prague Castle in the distance, glowing in the evening light. It felt like a scene from a dream warm, happy, and full of friendship. Please create an image based on this description.",90,0.7555555555555555,5,2
+32,male,how it is changes so much over time?,8,1.0,0,0
+32,male,what is the major arguments against it and not against with it,12,0.8333333333333334,0,0
+32,male,but what your opinion about this in short answer,9,1.0,1,0
+32,male,but sometimes women uses girls card than what is it?,10,1.0,0,0
+32,male,yea but they are doing it for playing as a victims thats why boys having less good imagine ,18,1.0,1,1
+32,male,lets make it more catchy,5,1.0,0,0
+43,male,"Make the image show six friends more clearly, standing in a group, laughing and enjoying the moment. Add more detail to the glowing sky, with shades of gold and pink, and make the Prague Castle look brighter in the background.",40,0.775,0,0
+32,male,just short the summary,4,1.0,0,0
+32,male,write some a frictional story ,5,1.0,0,0
+32,male,add some suspense,3,1.0,0,0
+32,male,change the plot,3,1.0,0,0
+32,male,"i am 30 and i have sports man like i am good in football, tennis and every sports almost and i want to make a dating profile make a catchy profile. i also watched alot of seasons and movies  some times i read books but mostly i am social person so i enjoyed to hang out with good prople",58,0.6896551724137931,8,3
+32,male,change the fun fact,4,1.0,0,0
+32,male,add some fun fact related to friends tv show,9,1.0,0,0
+32,male,remove fun fact,3,1.0,0,0
+41,male,A lack with surrounding of mountains and sand,8,1.0,0,0
+43,male,"Make the Prague Castle in the background more prominent, with warm illumination highlighting its towers and walls, and a slightly misty glow around it for a dreamy feel.",28,0.8928571428571429,0,0
+32,male,how to help my friend he is having a hard time he broke up with his girl how can i cheer him?,22,0.9090909090909091,5,0
+32,male,is it good plan to go on a short trip,10,1.0,0,1
+32,male,like which countries shloud i consider in summer in europe,10,0.9,1,1
+38,male,"A breathtaking scene of an international student's adventurous vacation in Holland. In the foreground, a young student with a backpack stands on a small wooden boat, smiling, navigating the serene canals of Giethoorn village. The water reflects charming thatched-roof houses and lush green landscapes under a soft blue sky with fluffy white clouds. In the background, a subtle view of Amsterdam emerges, featuring iconic canals lined with colorful buildings, a distant windmill, and vibrant tulip fields. The atmosphere is warm and sunny, with a mix of cultural elements like a Dutch flag and a bicycle leaning against a bridge. The image should have a realistic style, high detail, and a balanced composition, capturing the joy and exploration of the journey.",122,0.7131147540983607,0,1
+38,male,"A stylish and modern room design reflecting the personality of a serious, aggressive-looking yet decent and calm individual. The room features a bold yet balanced aesthetic with a dark color palette—deep charcoal walls contrasted by warm beige accents. A sleek, minimalist desk holds a laptop and a stack of books, symbolizing focus, while a large, imposing chair with sharp lines exudes strength and authority. The space is enhanced with beautiful, new decorative elements: a collection of vibrant painting frames showcasing abstract art and landscapes, hung symmetrically on the walls, adding elegance and creativity. A modern bookshelf displays unique sculptures and travel souvenirs, reflecting a love for new experiences. Soft lighting from a geometric chandelier and a large window with a view of greenery bring calmness and beauty. The floor is dark wood, complemented by a plush rug with intricate patterns. The overall style is realistic, highly detailed, and harmonious, blending aggression with serenity.",155,0.6967741935483871,0,2
+41,male,A lack with surrounding of mountains,6,1.0,0,0
+43,male,"want to renovate my bedroom into gaming room with my new gaming setup. I have ps 5 and a 32 inch monitor, suggest me some unique ideas for my new room to setup. consider the following things: 1. I am a 24 years male soo suggest me unique ideas according to a male gamer. 2. I also want neon lights for my gaming setup so suggest where i can stick or apply the neon lights. 3. some famous gaming posters or wall hangings for the room and add if you want something.",86,0.5930232558139535,11,0
+43,male,"great, could you suggest me some neon light to hand on wall? Recently one light is trending, people with their gaming name or their own name designing the neon light with their alphabets and hanging on the walls does it looks cool? should I do the same? or you suggest me something else?",53,0.7358490566037735,8,0
+43,male,I want to add laden station also for my duel sense controller just besides my ps5 and also with some funky design skin on controller ,25,0.88,3,0
+43,male,could you please add more details to image and also add some wall poster from these to - uncharted series and god of war or cod ,25,0.88,1,0
+43,male,"I live in a shared apartment with two other people — a female student from Russia and a male student from Bangladesh. They both work part-time at a restaurant, while I am also managing my own studies. I’d like to create a fair and balanced household chores schedule that works for all of us, considering everyone’s availability and preferences. Please suggest an effective way to divide tasks like cleaning, taking out the trash, washing dishes, and other common responsibilities so that no one feels overburdened and the apartment stays clean and comfortable for everyone.",96,0.78125,6,2
+43,male,great. ,1,1.0,0,0
+43,male,Could you let me know if there are any specific chores you prefer doing or would like to avoid? This will help me create a schedule that works for everyone’s comfort and skills,34,0.9411764705882353,4,1
+43,male,alright works fine. Thanks ,4,1.0,0,0
+43,male,"My Best friend’s birthday is coming up next week, and I need ideas for a thoughtful gift. He has a great personality, is dedicated to gym and fitness, and is passionate about bikes, superbikes, and riding. Please suggest some unique, practical, and meaningful gift options that fit his interests and lifestyle, across different price ranges",56,0.8392857142857143,3,0
+43,male,"Can you give me 5 gift ideas under €50, 5 ideas under €100, and 3 premium gift ideas above €100 based on his hobbies and personality",20,0.75,2,0
+47,male,show whole room with bed and gaming setup,8,1.0,0,0
+61,male,"A serene winter morning in Interlaken, Switzerland — standing on the frozen edge of Lake Brienz, surrounded by snow-covered mountains bathed in golden sunrise light, with partially frozen water reflecting the colors of the sky, and a few ducks on the ice. Crisp, peaceful atmosphere",45,0.8222222222222222,0,0
+43,male,"Could you suggest some experience-based gifts instead of physical items, like activities, trips, or workshops related to fitness or biking",21,0.9523809523809523,1,1
+43,male,I finds a gym membership would be best gift for him. ,11,1.0,2,0
+43,male,yeah i decided to gift him Fitness First gym membership. fits well with his dedication to gym and workout. thanks for the help. ,23,0.9130434782608695,2,0
+43,male,"I am currently on a muscle-building journey, and my goal is to develop a muscular body with a big, hard chest, large biceps, and increased overall strength. Please create a detailed, structured plan that includes workout routines, progressive overload strategies, and recovery recommendations to help me reach my goals effectively and safely",53,0.8490566037735849,4,0
+43,male,"Please create a complete muscle-building diet plan that includes calorie targets, macronutrient breakdown, and specific meal examples for each day of the week",24,1.0,0,0
+43,male,looks great!,2,1.0,0,0
+43,male,"now Could you list the most effective exercises for building a big chest and biceps, including sets, reps, rest times, and correct form tips?",24,0.9583333333333334,1,0
+43,male,"Please give me a 7-day meal plan for muscle growth, with easy-to-cook recipes, grocery list, and high-protein snack ideas",22,1.0,1,0
+43,male,"I’ll tell you what a typical day in my life looks like, the kinds of tasks I want to improve on, and my big and small goals. I want you to give me actionable, tailored suggestions for improving my routine and productivity. After that, I’ll share what feels doable and what doesn’t, and I’d like you to suggest alternative approaches that are more realistic, motivating, and sustainable. Please be specific and detailed",76,0.7105263157894737,12,2
+43,male,"I usually wake up around 7:30 AM. I start my day by checking my phone messages and social media for about 30 minutes, then make a quick breakfast, usually eggs or cereal. After that, I go for a 20–30 minute walk or light stretching.  From 9:00 AM to 12:30 PM, I usually work on my studies, assignments, or projects, but sometimes I get distracted and procrastinate, especially on tasks I find boring. Around midday, I take a lunch break and often scroll on my phone while eating.  In the afternoon, I try to exercise, either lifting weights or doing bodyweight exercises, but I sometimes skip this if I feel tired. I spend evenings (6:00–8:00 PM) either watching TV, gaming, or hanging out with friends.  Before bed, I sometimes read or plan for the next day, but I often fall asleep scrolling through my phone.",138,0.6739130434782609,18,0
+43,male,"Please suggest a detailed plan or routine that could help me improve my day, considering what I already do, what I want to add, and what feels realistic and sustainable",30,0.8666666666666667,4,0
+43,male,"Can you adjust the plan to make it more practical, keeping my energy levels, distractions, and daily commitments in mind?",20,1.0,2,0
+43,male,okk looks perfect for me now thanks gpt,8,1.0,1,0
+43,male,"I want to write a story. Here’s the basic idea: a timid robot who dreams of becoming a famous painter but struggles to express emotions through art. Please continue the story from here, develop the plot, and create interesting characters. Make it engaging, imaginative, and suitable for all readers",50,0.84,1,0
+43,male,"Can you rewrite the story with a adventurous, mysterious tone while keeping the main idea intact?",16,0.9375,1,0
+43,male,"Please develop the robot’s personality more, and also introduce supporting characters (friends, rivals, mentors) that help or challenge the robot.",21,0.9047619047619048,0,0
+43,male,perfect. thanks alot,3,1.0,0,0
+43,male,"I want you to help me write a Tinder dating profile bio. Here’s a bit about me: my personality traits: are-  adventurous, funny, thoughtful, ambitious, and I really value in relationships:- honesty, humor, creativity, deep conversations,etc. I enjoy- hiking, gaming, cooking, traveling, and I’m looking to connect with someone who shares my sense of adventure, loves trying new foods, is kind and open-minded and loves to play action games. Please draft a bio that is engaging, authentic, and reflects who I am.",86,0.7906976744186046,10,1
+43,male,"oh it looks great but make it more aesthetic and bolder and also change the tone, it should be bit flirty and romantic ;)",23,0.8260869565217391,0,0
+43,male,thanks for this bio! it perfectly my type. ,8,1.0,1,0
+43,male,"I want your help to support my close friend who just went through a difficult breakup. Here’s some context about him:-   My friend is sensitive, caring,and  optimistic, and they were very emotionally invested in their relationship. The breakup has hit them hard they’re feeling sad, anxious, lonely, and heartbroken. sometimes they isolate themselves or keep scrolling through memories of their ex.  They used to enjoy gaming, hiking, cooking, reading, socializing, but lately, they haven’t been doing much. i want to support him but I am confused how and what to do. ",95,0.7789473684210526,16,2
+47,male,"We are seven people living in a house, manage weekly tasks like , grocery, cleaning, cooking. etc",16,1.0,1,1
+43,male,"Can you give me specific things I can do to help my friend feel supported day-to-day, without being overwhelming or intrusive?",23,0.8695652173913043,4,0
+43,male,"Can you help me create a longer-term plan for supporting them over the next few weeks or months, including when to check in, what to say, and how to balance empathy with encouragement?",34,0.9411764705882353,3,0
+43,male,alright. let me try some of these first. thanks for the help. bye,13,1.0,1,0
+46,male," Last summer I was hiking in the Swiss Alps near Zermatt. I reached a meadow filled with wildflowers - purple lupines, white daisies, and bright yellow buttercups. The Matterhorn peak was visible in the distance, partially covered by wispy clouds. A small stream ran through the meadow, and I could hear cowbells from somewhere nearby. The air was crisp and clean, and I felt completely at peace surrounded by all that natural beauty",72,0.7777777777777778,4,0
+46,male,"My Situation: Hi, I'm Mateen and I share a 3-bedroom apartment with two roommates - Azaz and Inzamim. Azaz works early morning shifts at a coffee shop (leaves at 5am, back by 2pm), and Inzamim is a freelance designer who works from home but travels frequently for client meetings. I work a regular 9-5 office job.  We've been having some tension about cleaning - Azaz feels like they're always doing dishes since they're home in the afternoons, Inzamim says they shouldn't have to vacuum when they're barely home, and honestly I've been slacking on bathroom cleaning. We need a fair system that works with everyone's schedule.  Request: Can you help us create a fair chore division system that takes into account our different work schedules and time at home?",134,0.7238805970149254,14,1
+46,male,"**My Info**: Hi, I'm Mateen. I want to lose about 15 pounds and build some muscle. I'm pretty sedentary right now - work a desk job and haven't exercised regularly in months. I have about 45 minutes max on weekdays, maybe 1-2 hours on weekends.   For food, I like simple meals and I'm vegetarian. I tend to skip breakfast and eat a lot of takeout. I have a basic kitchen setup and I'm not a great cook. My biggest weakness is late-night snacking while watching TV.  **Request**: Can you create a realistic weekly fitness and meal plan that fits my schedule and helps me reach my goals?",109,0.7431192660550459,15,1
+46,male,"My Typical Day: I'm Mateen and my days are pretty chaotic. I wake up around 7:30am, rush to get ready, grab coffee on the way to my 9-5 office job. At work I get distracted by emails and social media a lot. I come home tired around 6pm, order food, and spend evenings scrolling my phone or watching Netflix. I go to bed too late (around midnight) and feel tired the next day.  What I Want to Improve: I procrastinate on important tasks, waste too much time on my phone, and never feel like I accomplish anything meaningful. I have personal projects I want to work on but never make time for them.  Request: Can you give me some practical suggestions to be more productive and focused in my daily routine?",131,0.6946564885496184,19,1
+46,male,"**My Request**: Hi, I need help explaining photosynthesis to my 5-year-old nephew in a way he'll understand. He's curious about why plants are green and how they ""eat."" Can you give me a simple, kid-friendly explanation that won't go over his head?",47,0.9361702127659575,8,0
+47,male,"Write some motivational speech i want to give to someone, who has lost something precious",15,0.9333333333333333,1,0
+46,male,"I want to better understand feminism - its history, main ideas, and different perspectives. I've heard various viewpoints but never really studied it properly. Can you give me an overview of key feminist concepts and movements so I can form a more informed opinion on gender equality issues?",48,0.9166666666666666,5,1
+46,male,"I want to write a short story but I'm stuck. I have this vague idea about someone who finds an old photo in a used book, but I don't know where to take it from there. Can you help me develop this into a compelling short story? Maybe suggest some plot directions or help me flesh out the character and setting?",63,0.8095238095238095,7,0
+46,male,"I need help writing a dating profile bio. I'm 25, work in development, love trying new restaurants, and I'm into hiking on weekends. I play cricket  and I'm learning to cook. I want something that sounds genuine and fun, not generic or trying too hard. Can you help me write a bio that actually represents who I am?",60,0.75,9,1
+46,male,My close friend just went through a tough breakup after a 3-year relationship. They're really struggling - alternating between anger and sadness. I want to be supportive but I'm not sure what to say or do that would actually help. Can you give me advice on how to be there for them during this difficult time?,57,0.9122807017543859,7,0
+46,male,Create an image of a cozy mountain cabin at dawn with warm light glowing from windows and mist in the valley below.,22,1.0,0,0
+46,male,"Design a modern minimalist bedroom with warm wood accents, plants, and natural light.",13,1.0,0,0
+47,male,Generate any image,3,1.0,0,0
+47,male,Camping in mountains,3,1.0,0,0
+47,male,sitting on chairs with friends,5,1.0,0,0
+47,male,show nanga parbat,3,1.0,0,0
+47,male,more clear it,3,1.0,0,0
+47,male,"show simple, room work setup on one side and the floor will be of brown ",15,1.0,0,0
+47,male,"on daily basis, of week and also,switch the task of the persosns",13,0.8461538461538461,0,0
+47,male,Suggest a watch for friend,5,1.0,0,0
+47,male,casual watch,2,1.0,0,0
+47,male,also show the price,4,1.0,0,0
+47,male,"Plan weekly fitness plan of 1 hour 15 minutes, five days a week.",11,0.9090909090909091,0,0
+50,male,thats great can you create one planner ,7,1.0,1,0
+47,male,How to manage time daily.,5,1.0,0,0
+47,male,"I am an international student, i have to manage university house chores and daily 4 hours working student",17,0.8823529411764706,2,0
+47,male,add some time for exercise ,5,1.0,0,0
+47,male,I want to explain some child of 5 year. how photosynthesis works,11,1.0,1,0
+47,male,What actually feminism is ?,4,1.0,0,0
+55,male,"I need gift ideas for a friend. They like baking and cooking. Travel a lot of leisure and health conscious. They are also considerably accomplished in their field and are doing well financially. I need suggestions for a gift that is not too expensive, neither too cheap and shows that I genuinely got it for them out of my love for them",62,0.7096774193548387,9,2
+61,male,"Cozy modern home office with big windows facing a forest, sunlight on a wooden desk with laptop and coffee, reading chair in corner, indoor plants, and warm lighting.",28,0.8928571428571429,0,0
+47,male,but now we are exploit the actuall definition of feminism,10,1.0,1,0
+47,male,"form an opinion, that should be only on the definition of feminism",12,1.0,0,0
+47,male,"what to tells to any feminist who, is quoting anything that is not related to feminism",16,0.8125,0,0
+47,male,tailor opinion in simple and short summary,7,1.0,0,0
+47,male,Write a fictional story of self improvement,7,1.0,0,0
+47,male,write short story,3,1.0,0,0
+47,male,create my simple bio for the person who wants to know main thing about me.,15,1.0,2,0
+54,male,an empty room with just gaming pc,7,1.0,0,0
+47,male,short and to the point,5,1.0,0,0
+49,male,I was traveling to india it was raining season and nature was good people of india are very kind and helpful,21,0.8095238095238095,1,1
+49,male,I was trekking and it was raining ,7,0.8571428571428571,1,0
+49,male,I was enjoying with my family and enjoyed a lot,10,1.0,2,0
+49,male,I visited a fort in rajasthan ,6,1.0,1,0
+49,male,I was chilling with my friends ,6,1.0,2,0
+50,male,After spending an year in Germany. I was travelling to India to meet my Fiancee and my Family so we all planned a trip to goa where we were enjoying having a chit chat and riding a watersports exploring new places also visited so trek spot. ,46,0.8260869565217391,5,0
+50,male,we also visited a temple in puri,7,1.0,1,0
+50,male,enjoying in the club,4,1.0,0,0
+50,male,we also visited kodaikanal dolphin nose point,7,1.0,1,0
+50,male,after that me and my fiancee went to germany ,9,1.0,2,0
+50,male,"i want a huge luxury room with a attached washroom and huge wardrobe with a nice sofa ,tv,  realistic ceiling ,marble flooring",22,0.8181818181818182,1,0
+50,male,"Currently,I am living with 3 roommates and one of them is too lazy to do all household work and another one is working professional who work from 9 to 5 job ,3rd one is master student so we need suggestion for household planning for cleaning ,cooking , washing, buying groceries, making weekly or monthly planner  to manage household chores in between us.",59,0.8135593220338984,4,0
+50,male,its my friend birthday can you suggest me some of the gifts idea for female. My budget is around 200 euros it should be useful and remembered long time.,28,0.9642857142857143,4,0
+50,male,"Hi gpt , I started gym for fitness from last couple of days so i need to build a weekly fitness planner and meal plan.I am vegan and i can do gym for max 2 hours ,my weight is 76 kg and height is 6 feet and i need a planner for every 2 hours for diet.",53,0.6792452830188679,6,0
+50,male,right now i am doing Master studies in Germany and i want to become more productive in my life bylearning new skills and new languages so suggest me some ideas to become productive everyday.,34,0.7941176470588235,4,0
+50,male,can you explain how photo synthesis work,7,1.0,1,0
+50,male,now i need to teach a 5 year old so it should be simple and easy,15,1.0,1,0
+50,male,can you covert this into story or shorter story with visualization ,11,0.9090909090909091,1,0
+50,male,what is feminism ?,3,1.0,0,0
+50,male,how it changed over period of time?,7,1.0,0,0
+50,male,what are the major pros and cons,7,1.0,0,0
+50,male,can you explain this me clearly and without any partiality answer should be neutral ,14,1.0,2,0
+50,male,but i think in India feminism has more negative impact towards the society as it may lead to many controversies so after reading all the answer and researching my opinion changed from positive to negative toward feminism.,37,0.8918918918918919,2,0
+50,male,now refine it from my  perspective,6,1.0,1,0
+50,male,there was a house where 2 kids found a key that doesn't match with the lock of their door but there were many secret doors in the house that will lead to a past connection with great grand parents.,39,0.8205128205128205,1,0
+50,male,"make it more realistic and horror based name of character should be lisa,Armita",14,1.0,0,0
+50,male,"can you create a dating profile bio for me as I am gentleman and kind  person who believe in loyalty not a gold digger also want someone who support me in every situation even at my worst , i am alos party person on weekend some times ",46,0.8478260869565217,6,0
+50,male,can you make it funnier and arttractive way,8,1.0,1,0
+50,male,"one of friend recently had a breakup ,the boy she was dating was a pervert. thisbroke her heart and she was going through a rough phase and i want to console her can you help me figureout howcan i help her?",41,0.7560975609756098,9,0
+50,male,she is very emotional and she was very loyal towards her partner so what should i say to her to console her and make her forget about the  relationship she had ?,31,0.7419354838709677,8,0
+55,male,This is bad,3,1.0,0,1
+50,male,are there any other alternate way to help her ?,9,1.0,1,0
+50,male,should i advice her to get in new realtion?,9,1.0,2,0
+50,male,ok thanks,2,1.0,0,0
+51,male,i at venice.,3,1.0,1,0
+51,male,4 floor big building,3,1.0,0,0
+51,male,i enjoing in paris,4,1.0,1,0
+51,male,i sm playing cricket on stadium,6,1.0,1,0
+51,male,i taken picture with ronaldo,5,1.0,1,0
+51,male,i am flying in ice-cream ,6,1.0,1,0
+51,male,i have big house,4,1.0,1,0
+51,male,outside one bmw car,4,1.0,0,0
+51,male,i am living 4th floor,5,1.0,1,0
+54,male,diving houshould chores in my apartment with other,8,1.0,1,0
+51,male,furnish,1,1.0,0,0
+51,male,patek philip watch,3,1.0,0,0
+51,male,sorry,1,1.0,0,0
+51,male,yes i make diffrent food,5,1.0,1,0
+51,male,calm,1,1.0,0,0
+51,male,i am not intersted in faminism,6,1.0,1,0
+51,male,ok#,1,1.0,0,0
+51,male,i am handsome,3,1.0,1,0
+51,male,yes and always ,3,1.0,0,0
+54,male,small lakes everywhere,3,1.0,0,0
+54,male,mercedes G wagon i black color,6,1.0,1,0
+54,male,create a weekly meal for me as i am going gym almost single day and cannot digest dairy,18,1.0,2,0
+54,male,how can i become productive evey single day,8,1.0,1,0
+54,male,"please explain me how photosynthesis works, imagine i am a toddler",11,1.0,2,0
+54,male,give me an opinin about feminism,6,1.0,1,0
+54,male,please write any fictiional story about a king and a bagger,11,0.9090909090909091,0,0
+54,male,"please make me a dating profile bio, about me, 5,8 height  and weight 72 kgs adn from pakistan and a software engineer by profession",22,0.8636363636363636,2,0
+54,male,"how can i support my friend, he got into bad relationship and now they broke up, my friend is male",20,0.9,5,1
+55,male,"From top of the castle in Heidelberg, I can see the city below me and the river flowing right beside it, there are houses with red rooftops and there is church in the center. There is population on either side of the river and I can see the sunset at the end of the horizon",55,0.6545454545454545,3,0
+55,male,The trees are a bit more green and I can see a boat in the river,16,0.875,1,0
+55,male,The boat is in the main river and not a bank,11,0.9090909090909091,0,0
+55,male,"I have moved into a new room. It's 22 square meters and empty. I want to design it in the following way. Adjacent walls are of contrasting colors, deep blue and white. There is window at the east wall of the room, it has blinds and there is computer table and chair in-front of it. A bed is placed in the north end of the room and a cupboard is along the west wall. There's a mirror and and a small desk on the south wall",88,0.6022727272727273,2,0
+55,male,The floor is carpeted in beige and cupboard is white,10,0.9,0,0
+55,male,Apply the updates on the first image and don't create a new image,14,0.8571428571428571,0,0
+55,male,I have moved into a new house where I have 5 housemates. The house is is three floors and a basement. 2 people on every floor. People on the same floor distribute the cleaning of the floor and the stairs leading to their floor. People on ground floor clean the stairs to the basement. I need a weekly schedule for cleaning chores so that work is distributed evenly and everyone does their part,71,0.5915492957746479,5,0
+55,male,Also add cleaning of windows in the living room and kitchen,11,1.0,0,0
+55,male,It needs to look like I put a lot of effort into thinking about it. They are a simple person and enjoy life to it's fullest. They have also been sick recently due to a virus and recovering well,40,0.8,3,2
+55,male,Where could I look for personalized aprons in Germany?,9,1.0,1,0
+55,male,Can you pull reviews from the internet and rate them from best to worst?,14,0.9285714285714286,2,0
+55,male,"I am thinking of bulking up. I'm a student in Germany studying full time and working part time so my schedule is pretty packed. I don't have a lot of time to prepare meals even over the weekend as I have to catch-up on my weekly study material. My goal is 2500 kcal atleast with minimal effort. Suggest a weekly diet plan that's healthy, not too expensive and protein rich. Budget for a week with 70 euros",79,0.7721518987341772,7,0
+58,male,single studio room including gym and computer setup,8,1.0,0,0
+55,male,I don't like tuna and spinach,7,1.0,1,1
+55,male,I want to become more productive in my daily life. I'm a full time Masters student in Germany and working part time for 20 hours a week. I have to be in the office for 8 hours on one day and rest is remote. My studies are also not online and the uni is 35 minutes away from my residence one way. I'm trying to juggle both; work and studies. It's taking a toll on my health and relaxing time. How can I improve it,85,0.6705882352941176,9,0
+55,male,Can you provide a checklist I can use for daily tasks?,11,0.9090909090909091,2,0
+55,male,Add time blocks for me for tasks that can help me stay productive and motivated,15,0.8666666666666667,2,0
+55,male,my commute to office takes 1 hour at least if the trains are on time,14,1.0,1,0
+58,male,having 27 squre meter room divided with my roommate separate beds but same washroom and kitchen ,15,1.0,1,0
+55,male,What is photosynthesis?,3,1.0,0,0
+55,male,Now I want to explain it to a 5 years old. Make it simple,13,0.8461538461538461,1,0
+55,male,Can you convert it into a story theme that's simple to understand yet intriguing?,15,1.0,1,0
+55,male,What is feminism and how has it changed over time. What was the origin and what was it really about?,20,0.75,0,0
+55,male,"Being a neutral entity, form some arguments against and in favor of feminism",13,1.0,0,0
+55,male,I think it is evolving in the right direction. How would you address the cultural context in this movement? What can be done to fix it?,26,0.8846153846153846,2,0
+55,male,So my idea is that feminism is about advocating for women rights globally. It should also address women from all socio-economic backgrounds and fight for them as a single entity rather than some groups using the agenda to put out their own conspiracies and exploit the real movement. It needs to be monitored and factors causing distress or misleading the movement should be dealt with. Am I missing something?,70,0.8285714285714286,4,0
+55,male,I am thinking of writing a short story about an astronaut who is sent to explore a distant planet for signs of life. She encounters some beings on the planet and tries to establish connection but they lock her up considering her hostile. Build on it,46,0.8695652173913043,5,0
+55,male,Incorporate resistance from the beings on the planet on a plan to coexist on account of massive reduction in available resources to accommodate more people,25,0.84,0,0
+55,male,"I need a bio for my dating profile. I'm a Masters student in Germany, like travelling, play a bit of online games and work part time. Create concise, funny and non cheesy lines for my bio",37,0.8108108108108109,4,1
+55,male,It's too mainstream. Add some twists,7,1.0,0,0
+55,male,Add a pickup line,4,1.0,0,0
+55,male,a better one that's funny,6,1.0,0,1
+55,male,Don't use games,4,1.0,0,0
+55,male,"I have a friend who is also a work colleague. She recently went through a breakup with a partner. They were together for a year. She is quirky, like to stay at home and introverted. In the right gathering, she is super active and excited. What can I do to cheer her up?",53,0.7924528301886793,7,1
+55,male,"What if she has become people averse for the time being, how can I reach out without feeling like I'm being pushy",23,0.9130434782608695,3,1
+57,male,Generate a beautiful view of mountains with greenery,8,1.0,0,1
+57,male,Generate an image of beautiful rivers flowing,7,1.0,0,1
+57,male,"Design a room with a bed, a table and a fan",11,0.7272727272727273,0,0
+57,male,Make a list of chores divided between two people,9,1.0,0,0
+57,male,Suggest me a meal plan and weekly fitness routine tailored to me,12,0.9166666666666666,2,0
+57,male,Suggest a weekly meal plan,5,1.0,0,0
+61,male,"Four roommates — Sam (night shifts, hates vacuuming, fine with cooking), Lina (works from home, likes tidiness, enjoys laundry), Ravi (9–5, prefers dishes, allergic to dust), and me (okay with all chores, but prefer not to clean bathrooms weekly). Suggest a fair weekly chore plan considering preferences, schedules, and fairness.",48,0.9166666666666666,1,0
+57,male,Suggest me a gift for my friend,7,1.0,2,0
+57,male,They like sports ,3,1.0,1,1
+57,male,Suggest me tips to become more productive,7,1.0,1,0
+57,male,Make a chart teaching children photosynthesis ,6,1.0,0,0
+57,male,What is feminism?,3,1.0,0,0
+59,male,"i wake up at 11 am and awake till 12 a.m, can you help me make a weekly fitness plan",19,0.9473684210526315,3,0
+57,male,why do you think it is necessary?,7,1.0,1,0
+57,male,Write a fictional story about a small boy defeating a big bad wolf,13,0.8461538461538461,0,1
+57,male,Suggest a dating profile for me,6,1.0,1,0
+57,male,I love watching movies and coding,6,1.0,1,1
+57,male,How should I support my friend after a breakup?,9,1.0,2,0
+58,male,bavarian alps,2,1.0,0,0
+58,male,"my friend likes sweets, perfumes ",5,1.0,1,0
+58,male,"my weight is 67kg and i want to gain muscle but lose belly fat and suggest me a good meal plan for this week , i do 1hour gym daily",29,0.9310344827586207,4,1
+58,male,"when i do like 2 hours of work then i feel sleepy , how do i become more productive , specially my online freelancer job which has no specific time has disturbed my routine ",31,0.8387096774193549,5,1
+58,male,"i am bad at that , how do i teach ",9,0.8888888888888888,2,1
+58,male,"i don't know what these gender sort of politics are , can you help me understand it",17,1.0,3,0
+58,male,"i not good a fiction stories , can you help me give some ideas",13,1.0,3,1
+58,male,"help me create my date bio profile ""Gym /travelling lover, cooking,music, jogging,  ",13,1.0,2,0
+58,male,"prepare a message for my friend after his breakup "" its okay don't worry you will get another good partner""",20,1.0,2,1
+59,male,eibsee lake ,2,1.0,0,0
+59,male,a chair with table and a bed . and a wardrobe,10,0.7,0,0
+59,male,"i need an app to  divide our work in an apartment , i need an app",15,0.6666666666666666,3,0
+59,male,"my friend likes watches , give me some best options of watches in 100 euros budget",14,0.9285714285714286,2,0
+59,male,"i will go with g shock , show me pictures",9,1.0,2,0
+59,male,ok thanks for the help,5,1.0,0,0
+59,male,that looks cool ,3,1.0,0,0
+59,male,can you give me some productive tasks on daily bases,10,1.0,2,0
+59,male,i want to teach a school boy how photosynthesis work can you teach me in easy way as i am a 5 years child,23,0.8695652173913043,4,0
+59,male,"i want to know about feminism, explain me",8,1.0,2,0
+59,male,"i want write a fictional story , can you write me an intersting fictional story ",14,0.7857142857142857,3,0
+59,male,"i am a 26 years boy, i want to create a dating profile can you help me create one",18,0.8333333333333334,4,0
+59,male,"one of my friend recently gone through a breakup, can you suggest me some steps how can i help him to comeout through this sad moment",26,0.9230769230769231,5,1
+61,male,"Four roommates — Sam (night shifts, hates vacuuming, fine with cooking), Lina (works from home, likes tidiness, enjoys laundry), Ravi (9–5, prefers dishes, allergic to dust), and me (okay with all chores, but prefer not to clean bathrooms weekly). Suggest a fair weekly chore plan considering preferences, schedules, and fairness.",48,0.9166666666666666,1,0
+61,male,"Cozy modern home office with big windows facing a forest, sunlight on a wooden desk with laptop and coffee, reading chair in corner, indoor plants, and warm lighting.",28,0.8928571428571429,0,0
+61,male,"A serene winter morning in Interlaken, Switzerland — standing on the frozen edge of Lake Brienz, surrounded by snow-covered mountains bathed in golden sunrise light, with partially frozen water reflecting the colors of the sky, and a few ducks on the ice. Crisp, peaceful atmosphere.",45,0.8222222222222222,0,0
+61,male,"Suggest gift ideas for my cheerful, creative friend who loves painting, hiking, and coffee, and just started a remote design job in a small apartment. We’ll refine ideas until one feels perfect.",33,0.9090909090909091,2,0
+61,male,"My fitness goals, diet, and time:45 minutes/day, 5 days a week. Suggest exercise and meal plan; we’ll refine for realism and preferences",23,0.9130434782608695,2,0
+61,male,I want to become more productive in my daily life pleas suggest me the aspects to become more productive,19,0.7894736842105263,3,0
+61,male,"Explain photosynthesis as a fun, simple story or game for a 5-year-old.",13,0.9230769230769231,0,0
+61,male,Explain feminism simply and help me form an opinion.,9,1.0,1,0
+61,male,Help me write a fictional short story with your suggestions and ideas.,12,1.0,2,0
+61,male,"Write a fun and engaging dating profile bio for me, highlighting my personality, hobbies, and what I’m looking for in a partner.",23,0.8695652173913043,3,0
+61,male,"Suggest ways to support a friend who’s going through a breakup, including comforting words, helpful actions, and ways to lift their spirits",23,0.8695652173913043,1,0
+62,male,generate image a group of friends having fun in prague,10,1.0,0,0
+62,male,neat desk with gaming monitor big speakers and tv  with applce macbook m4,13,0.9230769230769231,0,0
+62,male,"speakers should be in whole great lamp in the room, king size bed",13,0.9230769230769231,0,0
+62,male,tv in front wall of the bed with mood lighting,10,1.0,0,0
+62,male,4 people shared apartment 2 b 2 g and want to divide house hold chores for the whole weel,16,1.0,0,0
+62,male,"cooking and washing of utensils , clothes are separate activities of individuals",11,0.9090909090909091,0,0
+62,male,remove food and laundry,4,1.0,0,0
+62,male,also remove washing utensils and grocery,6,1.0,0,0
+62,male,what to buy for a slavic girl age 25 loves to eat sushi,12,0.9166666666666666,0,0
+62,male,for birthday ,2,1.0,0,0
+62,male,mothers with young child should be  given a job this would be an argumen tin feminism right as ,18,0.9444444444444444,0,0
+62,male,luxury sushi dinner looks nice also give idea for flowers and a card,13,1.0,0,0
+62,male,vegetarian meal training 6 d a week 70 kg 18 per body fat also give a fitness routine,15,0.9333333333333333,0,0
+62,male,add machines,2,1.0,0,0
+62,male,i am a student i wake up have coffee attend classes from 9-15  i am not able to go to gym i get tired  a lot,25,0.76,4,0
+62,male,how do you manage stress i cant control what deadline is coming voer,13,1.0,2,0
+62,male,they dont have this much attention span,7,1.0,1,0
+62,male,how to stay active i cant start running in middle of a campus,13,1.0,1,0
+62,male,do you think desk pushups barely do anything,8,0.875,1,0
+62,male,how do you explain a5 yr old who speaks english how photosynthesis work,13,0.9230769230769231,1,0
+62,male,make it a story and relatable to everyday life,9,1.0,0,0
+62,male,how will you explain carbon dioxide lol to 5 yr old,10,1.0,1,0
+62,male,also oxygen,2,1.0,0,0
+62,male,what is feminism,3,1.0,0,0
+62,male,jus feminism in 20 wrods crisp,5,1.0,0,0
+62,male,what are major arguments for and against it  today,9,1.0,0,0
+62,male,"gender eq is correct, but do you think they need period leaves in offices",14,1.0,2,0
+62,male,so all in all equal rights as with men in sectors which include more men so the number women could also grow,22,0.8181818181818182,0,0
+62,male,50 word conclusion,2,1.0,0,0
+62,male,write story with space x travellers encountering an alien and then there is a fight like mission impossible,18,1.0,0,1
+62,male,"man 25  do fitness and boxing, listening to reggaeton and exploring new places",12,0.9166666666666666,0,0
+62,male,create a dating profile bio,5,1.0,0,0
+62,male,my friend is going through a break of 5 yr relation he is 25 male bit reserved and otherwise very social and outgoing once he get along support after a breakup,29,0.8620689655172413,3,0
+62,male,"feels like he still in memories or moments with her, he cant forget them",14,0.9285714285714286,4,1
