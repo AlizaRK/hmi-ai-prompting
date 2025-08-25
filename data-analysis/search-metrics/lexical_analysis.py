@@ -4,18 +4,19 @@ import re
 from scipy import stats
 from pathlib import Path
 
-# ========= Project-relative paths (auto-detect) =========
+# ========= Robust project root finder =========
 THIS_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = THIS_DIR
 
-# If the script is in the project root, 'data-analysis' is here.
-# If the script is in 'search-metrics', then 'data-analysis' is one level up.
-if (THIS_DIR / "data-analysis").exists():
-    PROJECT_DIR = THIS_DIR
-elif (THIS_DIR.parent / "data-analysis").exists():
-    PROJECT_DIR = THIS_DIR.parent
-else:
-    # Fallback: assume current directory is project root
-    PROJECT_DIR = THIS_DIR
+# climb up until we find a folder that contains 'data-analysis'
+while PROJECT_DIR != PROJECT_DIR.parent and not (PROJECT_DIR / "data-analysis").exists():
+    PROJECT_DIR = PROJECT_DIR.parent
+
+if not (PROJECT_DIR / "data-analysis").exists():
+    raise FileNotFoundError(
+        f"Could not locate 'data-analysis' starting from {THIS_DIR}. "
+        "Please ensure the project has a 'data-analysis' folder."
+    )
 
 DATA_DIR = PROJECT_DIR / "data-analysis"
 OUTPUT_DIR = PROJECT_DIR / "search-metrics"
@@ -183,13 +184,13 @@ stats_rows = [run_tests(per_msg, m) for m in metrics]
 stats_df = pd.DataFrame(stats_rows)
 
 # ========= Save outputs (to project/search-metrics) =========
-(per_msg).to_csv(OUTPUT_DIR / "lexical_per_message.csv", index=False)
-(group_summary).to_csv(OUTPUT_DIR / "lexical_group_summary.csv", index=False)
+#(per_msg).to_csv(OUTPUT_DIR / "lexical_per_message.csv", index=False)
+#(group_summary).to_csv(OUTPUT_DIR / "lexical_group_summary.csv", index=False)
 
-with pd.ExcelWriter(OUTPUT_DIR / "lexical_stats_summary.xlsx", engine="openpyxl") as writer:
-    group_summary.to_excel(writer, sheet_name="Group Summary", index=False)
-    stats_df.to_excel(writer, sheet_name="Stat Tests", index=False)
-    per_msg.head(200).to_excel(writer, sheet_name="Sample Per-Message", index=False)
+#with pd.ExcelWriter(OUTPUT_DIR / "lexical_stats_summary.xlsx", engine="openpyxl") as writer:
+#    group_summary.to_excel(writer, sheet_name="Group Summary", index=False)
+#    stats_df.to_excel(writer, sheet_name="Stat Tests", index=False)
+#    per_msg.head(200).to_excel(writer, sheet_name="Sample Per-Message", index=False)
 
 # ========= Print a compact console summary =========
 print("\n=== Loaded from:", DATA_DIR, "===")
@@ -198,7 +199,4 @@ print(group_summary.to_string(index=False))
 print("\n=== Statistical Tests (Female vs Male) ===")
 print(stats_df.to_string(index=False))
 
-print("\nSaved files in:", OUTPUT_DIR)
-print(" - lexical_per_message.csv")
-print(" - lexical_group_summary.csv")
-print(" - lexical_stats_summary.xlsx")
+
