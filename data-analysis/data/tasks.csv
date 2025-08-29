@@ -1,0 +1,22 @@
+id,description,task_type,category,title
+1,"Describe one of your favorite moments from your last holiday — include where you were, what you saw, and how it felt. Then ask the AI to generate an image based on your description.
+After receiving the image, adjust your prompt to make it closer to your memory. Iterate at least twice.",image,Image Generation,Visualize a memory from your last vacation.
+2,"You recently moved into a new room and are seeking inspiration for its design. Describe your space to the AI, share some elements you'd like included, and ask it to generate an image accordingly. ",image,Image Generation,Design your room
+3,"Start by telling the AI about your roommates (e.g., number, work routines, preferences). Ask the AI to suggest a fair way to divide chores.
+Give feedback on the AI’s suggestion — what worked, what didn’t. Then revise the plan with the AI until you're satisfied.
+",text,Brainstorming,You share an apartment and want help dividing household chores.
+4,"Describe your friend to the AI — personality, interests, recent life events. Ask for gift ideas. Iterate until you find something that feels “just right.”",text,Brainstorming,Buy a thoughtful birthday gift for your best friend.
+5,"Share your fitness goals, dietary preferences, and time availability with the AI.
+ Ask for a plan that includes exercise routines and meal suggestions.
+After the AI’s first response, challenge it: “Can this be made more realistic?” or “I don't like X, what else?” Keep refining.",text,Planning,Build a weekly fitness and meal plan tailored to you.
+6,"Start by telling the AI what a typical day in your life looks like, what kinds of tasks you want to improve on, and what your goals are (big or small).
+Ask it to give you suggestions. Then explore:
+ • What part of its advice feels doable or not?
+ • Can it suggest a different approach — something more realistic, motivating, or sustainable?
+ • Ask it to adjust tone (gentle vs. strict), style (checklist vs. flexible), or time frame (short term vs. long term).
+See how far you can get refining a plan that actually feels like you.",text,Planning,You want to become more productive in your daily life.
+9,"First, ask the AI to explain it simply. Then ask it to turn the explanation into a story or game a 5-year-old would enjoy. Prompt the AI to make the explanation shorter, more fun, or more visual.",text,Knowledge / Research,Teach a 5-year-old how photosynthesis works
+10,"Have a conversation with the AI to explore:\n • What is feminism?\n • How has it changed over time?\n • What are the major arguments for and against it today?\nAsk the AI to explain things clearly and neutrally — but also challenge it with questions or counterpoints you might have.\nAt the end, summarize your view in your own words and tell the AI if your opinion has changed or deepened. Ask it to reflect back on what you said and refine your perspective if needed.",text,Knowledge / Research,Learn more about feminism and form an opinion
+11,"Start with a basic idea (e.g., a shy dragon who wants to be a chef). Then ask the AI to continue the story. Use the AI to revise the tone, change the plot, or develop characters.",text,Storywriting (Creative),Write a fictional short story with AI assistance
+12,"Tell the AI what kind of person you are and what you value in relationships or connections. Ask it to draft a dating bio. React to what it writes. Ask it to make it funnier, bolder, more subtle — whatever you prefer. Iterate at least twice.",text,Open-Ended / Expressive,Create your dating profile bio using AI
+13,"Your close friend just went through a difficult breakup and is feeling low. Use the AI to help you figure out how to support them in a way that feels meaningful. Start by telling the AI a little about your friend — their personality, what the relationship meant to them, and how they’re coping now. Ask the AI what you could say or do to help.",text,Open-Ended / Expressive,Support a friend after a breakup
